@@ -1,0 +1,7 @@
+node_modules
+dist
+public/tokens.css
+public/styles.css
+src/content/tokens.json
+*.local
+.DS_Store

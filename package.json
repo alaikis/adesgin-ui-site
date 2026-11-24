@@ -1,0 +1,24 @@
+{
+  "name": "adesgin-ui-site",
+  "version": "0.2.0",
+  "private": true,
+  "description": "AlaiDesign 组件官网（独立仓库，GitHub Pages 部署）",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alaikis/adesgin-ui-site.git"
+  },
+  "description": "AlaiDesign 组件官网（独立仓库，GitHub Pages 部署）。@alaikis/alaidesign-web 发布至 npm 后改回 version 范围依赖",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/generate-token-docs.mjs && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@alaikis/alaidesign-web": "file:../AlaiDesign/packages/core"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "typescript": "^5.9.3"
+  }
+}
