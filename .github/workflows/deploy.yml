@@ -22,6 +22,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            source/AlaiDesign/package-lock.json
+            package-lock.json
 
       - name: Checkout AlaiDesign source
         uses: actions/checkout@v4
@@ -39,14 +43,12 @@ jobs:
         run: |
           mkdir -p vendor/alaidesign-web
           cp -r source/AlaiDesign/packages/core/. vendor/alaidesign-web/
-          # 本地开发用：若 node_modules 中无 @alaikis/alaidesign-web symlink，手动建
+          rm -rf node_modules/@alaikis/alaidesign-web
           node -e "
             const fs=require('fs'),path=require('path');
-            const nm=path.resolve('node_modules/@alaikis');
-            if(fs.existsSync(nm)){
-              fs.rmSync(path.join(nm,'alaidesign-web'),{recursive:true,force:true});
-              fs.symlinkSync(path.resolve('vendor/alaidesign-web'),path.join(nm,'alaidesign-web'),'dir');
-            }
+            fs.mkdirSync(path.join('node_modules/@alaikis'),{recursive:true});
+            fs.rmSync(path.join('node_modules/@alaikis/alaidesign-web'),{recursive:true,force:true});
+            fs.symlinkSync(path.resolve('vendor/alaidesign-web'),path.join('node_modules/@alaikis/alaidesign-web'),'dir');
           "
 
       - name: Install dependencies
