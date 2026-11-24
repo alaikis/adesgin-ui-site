@@ -1,6 +1,11 @@
 # AlaiDesign 官网（adesgin-ui-site）
 
-AlaiDesign 组件库的独立官网仓库，部署到 GitHub Pages `https://alaikis.github.io/adesgin-ui-site/`。
+AlaiDesign 组件库的独立官网仓库。
+
+## 部署地址
+
+- GitHub Pages 默认：`https://alaikis.github.io/adesgin-ui-site/`（或组织首页 `https://alaikis.github.io/`，需在 Settings → Pages 勾选 "Create a github.io repository"）
+- 自定义域：`https://adesgin.alaikis.com/`（推荐，需在仓库 Settings → Pages → Custom domain 配置 + DNS CNAME）
 
 ## 组件依赖
 
@@ -10,18 +15,21 @@ AlaiDesign 组件库的独立官网仓库，部署到 GitHub Pages `https://alai
 npm install
 ```
 
+> 当前 `package.json` 暂用 `file:../AlaiDesign/packages/core`（npm 包未发布），发布后改回 version 范围依赖。
+
 ## 构建
 
 ```bash
 npm run build
-# 产物在 dist/，PAGES_BASE 由 CI 注入
+# 产物在 dist/，PAGES_BASE 由 CI 注入（默认 /，自定义域用根路径）
 ```
 
-## 部署
+## 自定义域配置（adesgin.alaikis.com）
 
-- 推送 `main` 分支 → `.github/workflows/deploy.yml` 自动构建并部署到 GitHub Pages
-- 需在 GitHub 仓库 Settings → Pages 配置为 **GitHub Actions** 部署源
-- 构建产物路径 `dist/`（独立仓 `outDir` 默认为 `dist`，无子路径前缀）
+1. **DNS（域名服务商侧）**：CNAME 记录 `adesgin` → `alaikis.github.io`
+2. **GitHub 仓库 Settings → Pages → Custom domain**：填 `adesgin.alaikis.com`
+3. **勾选 Enforce HTTPS**（DNS 生效后 24h 内证书自动签发）
+4. 本仓 `PAGES_BASE` 已设为 `/`（自定义域根路径），无需再改
 
 ## 与 AlaiDesign 主仓关系
 
