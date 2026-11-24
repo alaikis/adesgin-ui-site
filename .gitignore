@@ -1,7 +1,6 @@
 node_modules
 dist
-public/tokens.css
-public/styles.css
+public
 src/content/tokens.json
 *.local
 .DS_Store

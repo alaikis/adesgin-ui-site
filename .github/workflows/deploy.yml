@@ -18,13 +18,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Checkout AlaiDesign source
+        uses: actions/checkout@v4
+        with:
+          repository: alaikis/alai-desgin
+          path: source/AlaiDesign
+
+      - name: Build @alaikis/alaidesign-web
+        run: |
+          cd source/AlaiDesign
+          npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+          npm run build --workspace=@alaikis/alaidesign-web
+
+      - name: Link Web Components core into vendor
+        run: |
+          mkdir -p vendor/alaidesign-web
+          cp -r source/AlaiDesign/packages/core/. vendor/alaidesign-web/
+          # 本地开发用：若 node_modules 中无 @alaikis/alaidesign-web symlink，手动建
+          node -e "
+            const fs=require('fs'),path=require('path');
+            const nm=path.resolve('node_modules/@alaikis');
+            if(fs.existsSync(nm)){
+              fs.rmSync(path.join(nm,'alaidesign-web'),{recursive:true,force:true});
+              fs.symlinkSync(path.resolve('vendor/alaidesign-web'),path.join(nm,'alaidesign-web'),'dir');
+            }
+          "
 
       - name: Install dependencies
         run: npm install
