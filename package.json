@@ -15,8 +15,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@alaikis/alaidesign-web": "file:./vendor/alaidesign-web",
-    "highlight.js": "^11.10.0"
+    "@alaikis/alaidesign-web": "file:../AlaiDesign/packages/core"
   },
   "devDependencies": {
     "vite": "^6.0.0",

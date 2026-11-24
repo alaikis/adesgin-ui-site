@@ -18,14 +18,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: |
-            source/AlaiDesign/package-lock.json
-            package-lock.json
+      - name: Checkout official site
+        uses: actions/checkout@v4
 
       - name: Checkout AlaiDesign source
         uses: actions/checkout@v4
@@ -33,28 +27,26 @@ jobs:
           repository: alaikis/alai-desgin
           path: source/AlaiDesign
 
-      - name: Build @alaikis/alaidesign-web
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build AlaiDesign Svelte package (for styles.css atomic classes)
         run: |
           cd source/AlaiDesign
           npm ci --legacy-peer-deps || npm install --legacy-peer-deps
-          npm run build --workspace=@alaikis/alaidesign-web
+          npm run build
 
-      - name: Link Web Components core into vendor
+      - name: Build @alaikis/alaidesign-web
         run: |
-          mkdir -p vendor/alaidesign-web
-          cp -r source/AlaiDesign/packages/core/. vendor/alaidesign-web/
-          rm -rf node_modules/@alaikis/alaidesign-web
-          node -e "
-            const fs=require('fs'),path=require('path');
-            fs.mkdirSync(path.join('node_modules/@alaikis'),{recursive:true});
-            fs.rmSync(path.join('node_modules/@alaikis/alaidesign-web'),{recursive:true,force:true});
-            fs.symlinkSync(path.resolve('vendor/alaidesign-web'),path.join('node_modules/@alaikis/alaidesign-web'),'dir');
-          "
+          cd source/AlaiDesign
+          npm run build --workspace=@alaikis/alaidesign-web
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build
+      - name: Build official site
         run: npm run build
         env:
           PAGES_BASE: /

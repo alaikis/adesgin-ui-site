@@ -1,22 +1,22 @@
 // 构建期解析 tokens.css → tokens.json（官网 token 文档页数据源）
-// 独立仓：tokens.css 来自 @alaikis/alaidesign-web 包的 dist（npm 安装）
+// 独立仓：tokens.css 来自 @alaikis/alaidesign-web 包（npm install 后位于 node_modules）
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const tokensCssPath = path.resolve(
-  __dirname,
-  '..',
-  'node_modules',
-  '@alaikis/alaidesign-web',
-  'dist',
-  'tokens.css',
-);
-if (!fs.existsSync(tokensCssPath)) {
-  console.error('[generate-token-docs] 未找到 tokens.css，请先 npm install');
+
+// 优先从 node_modules 读取（CI 场景），回退到本地 AlaiDesign 构建产物
+const candidates = [
+  path.resolve(__dirname, '..', 'node_modules', '@alaikis', 'alaidesign-web', 'dist', 'tokens.css'),
+  path.resolve(__dirname, '..', '..', 'AlaiDesign', 'packages', 'core', 'dist', 'tokens.css'),
+];
+const tokensCssPath = candidates.find((p) => fs.existsSync(p));
+if (!tokensCssPath) {
+  console.error('[generate-token-docs] 未找到 tokens.css，请先 npm install 或构建 @alaikis/alaidesign-web');
   process.exit(1);
 }
+console.log('[generate-token-docs] using:', tokensCssPath);
 const tokensCss = fs.readFileSync(tokensCssPath, 'utf8');
 
 // 提取 CSS 自定义属性
