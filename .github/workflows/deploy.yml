@@ -25,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: alaikis/alai-desgin
+          ref: ai/Administrator/alaidesign-website-multi-framework
           path: source/AlaiDesign
 
       - name: Setup Node
@@ -32,19 +33,14 @@ jobs:
         with:
           node-version: 20
 
-      - name: Build AlaiDesign Svelte package (for styles.css atomic classes)
-        run: |
-          cd source/AlaiDesign
-          npm ci --legacy-peer-deps || npm install --legacy-peer-deps
-          npm run build
+      - name: Install dependencies
+        run: npm install
 
       - name: Build @alaikis/alaidesign-web
         run: |
           cd source/AlaiDesign
+          npm install --legacy-peer-deps
           npm run build --workspace=@alaikis/alaidesign-web
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Build official site
         run: npm run build
