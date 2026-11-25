@@ -540,9 +540,9 @@ aluBoundary.setAttribute('error', '渲染失败');`,
     code: {
       svelte: `<script>\n  import { DataTable } from '@alaikis/alaidesign';\n  const columns = [{ key: 'id', title: '订单号', sortable: true }];\n  const data = [{ id: 'SH-001' }];\n</script>\n<DataTable {columns} {data} onrow-click={onRowClick} />`,
       web: `<alu-data-table
-  columns='${JSON.stringify(columns)}'
-  data='${JSON.stringify(data)}'
-  pagination='${JSON.stringify({ total: data.length, pageSize: 10 })}'
+  columns='\${JSON.stringify(columns)}'
+  data='\${JSON.stringify(data)}'
+  pagination='\${JSON.stringify({ total: data.length, pageSize: 10 })}'
 ></alu-data-table>`,
       vue: `<AluDataTable :columns="columns" :data="data" @row-click="onRowClick" @sort="onSort" />`,
       react: `<AluDataTable columns={columns} data={data} onRowClick={onRowClick} onSort={onSort} />`,
