@@ -2,6 +2,8 @@
 // 结构：顶部导航 + 落地页（Hero/能力/快速开始）+ 组件文档站（分类导航 + live demo + 三框架代码 tab）+ 设计 token + 安装。
 import '@alaikis/alaidesign-ui';
 import '../site.css';
+import { componentDocs } from './docs/components';
+import type { ComponentDoc, ApiProp, ApiEvent, ApiSlot } from './docs/types';
 
 // ---------- 物流场景 mock 数据（静态，不依赖任何后端 API） ----------
 const mockShipments = [
@@ -191,15 +193,23 @@ const DEMOS: Record<string, string> = {
     </alu-table>`,
 };
 
-// ---------- 三框架代码片段（Web Components / Vue / React 写法） ----------
-function codeFor(component: string, web: string, vue: string, react: string) {
-  return { 'Web Components': web, Vue: vue, React: react };
+// ---------- 三框架代码片段（Svelte / Web Components / Vue / React 写法） ----------
+// 组件库主包是 Svelte（@alaikis/alaidesign），故 Svelte tab 用原生 Svelte 组件；
+// Web Components / Vue / React tab 用 @alaikis/alaidesign-ui 自定义元素 + wrapper。
+function codeFor(component: string, svelte: string, web: string, vue: string, react: string) {
+  return { Svelte: svelte, 'Web Components': web, Vue: vue, React: react };
 }
 
 const CODE: Record<string, Record<string, string>> = {};
 
 CODE.button = codeFor(
   'button',
+  `// Svelte（@alaikis/alaidesign）
+<script>
+  import { Button } from '@alaikis/alaidesign';
+  let onSubmit;
+</script>
+<Button variant="outline" size="sm" {onSubmit}>提交运单</Button>`,
   `<alu-button variant="outline" size="sm">提交运单</alu-button>
 // 事件
 aluBtn.addEventListener('click', (e) => { /* 处理 */ });`,
@@ -219,6 +229,18 @@ function Submit() {
 
 CODE['data-table'] = codeFor(
   'data-table',
+  `// Svelte（@alaikis/alaidesign）
+<script>
+  import { DataTable } from '@alaikis/alaidesign';
+  const columns = [
+    { key: 'id', title: '订单号', sortable: true },
+    { key: 'tracking', title: '运单号' },
+    { key: 'status', title: '状态' },
+  ];
+  const data = [{ id: 'SH-001', tracking: '3SABC', status: 'delivered' }];
+  const onRowClick = (row) => console.log(row);
+</script>
+<DataTable {columns} {data} {onRowClick} />`,
   `const columns = [
   { key: 'id', title: '订单号', sortable: true },
   { key: 'tracking', title: '运单号' },
@@ -252,6 +274,15 @@ aluTable.addEventListener('sort', (e) => console.log(e.detail));`,
 
 CODE['dialog'] = codeFor(
   'dialog',
+  `// Svelte（@alaikis/alaidesign）
+<script>
+  import { Dialog, DialogTrigger, DialogContent } from '@alaikis/alaidesign';
+  import { Button } from '@alaikis/alaidesign';
+</script>
+<Dialog>
+  <DialogTrigger><Button>打开</Button></DialogTrigger>
+  <DialogContent>…</DialogContent>
+</Dialog>`,
   `<alu-dialog>
   <alu-dialog-trigger><alu-button>打开</alu-button></alu-dialog-trigger>
   <alu-dialog-content>…</alu-dialog-content>
@@ -271,6 +302,14 @@ dialog.addEventListener('close', () => {});`,
 
 CODE.input = codeFor(
   'input',
+  `// Svelte（@alaikis/alaidesign）
+<script>
+  import { Input, FormField } from '@alaikis/alaidesign';
+  let value = '';
+</script>
+<FormField label="运单号" required>
+  <Input bind:value placeholder="如 3SABC123456789" />
+</FormField>`,
   `<alu-input placeholder="运单号" />
 aluInput.addEventListener('input', (e) => e.detail.value);`,
   `<AluInput placeholder="运单号" @input="(v) => onInput(v)" />`,
@@ -279,6 +318,12 @@ aluInput.addEventListener('input', (e) => e.detail.value);`,
 
 CODE['checkbox'] = codeFor(
   'checkbox',
+  `// Svelte（@alaikis/alaidesign）
+<script>
+  import { Checkbox } from '@alaikis/alaidesign';
+  let checked = false;
+</script>
+<Checkbox bind:checked />`,
   `<alu-checkbox />
 aluCheckbox.addEventListener('change', (e) => e.detail.checked);`,
   `<AluCheckbox @change="(checked) => onChange(checked)" />`,
@@ -287,6 +332,18 @@ aluCheckbox.addEventListener('change', (e) => e.detail.checked);`,
 
 CODE.tabs = codeFor(
   'tabs',
+  `// Svelte（@alaikis/alaidesign）
+<script>
+  import { Tabs, TabsList, TabsTrigger, TabsContent } from '@alaikis/alaidesign';
+  let active = 'overview';
+</script>
+<Tabs bind:active>
+  <TabsList>
+    <TabsTrigger value="overview">概览</TabsTrigger>
+    <TabsTrigger value="history">历史</TabsTrigger>
+  </TabsList>
+  <TabsContent value="overview">…</TabsContent>
+</Tabs>`,
   `<alu-tabs value="overview">
   <alu-tabs-list>…</alu-tabs-list>
   <alu-tabs-content value="overview">…</alu-tabs-content>
@@ -298,12 +355,10 @@ aluTabs.addEventListener('tab-change', (e) => e.detail.value);`,
 
 CODE.install = codeFor(
   'install',
-  `npm install @alaikis/alaidesign-ui
-// CSS 注入（一次）
-import '@alaikis/alaidesign-ui/styles.css';
-import '@alaikis/alaidesign-ui/tokens.css';
-// 使用
-<alu-button variant="outline">提交</alu-button>`,
+  `npm install @alaikis/alaidesign
+# Svelte 组件库主包
+import { Button } from '@alaikis/alaidesign';
+<Button variant="outline">提交</Button>`,
   `npm install @alaikis/alaidesign-vue @alaikis/alaidesign-ui
 import '@alaikis/alaidesign-ui/styles.css';
 // Vue 3.3+ 需标记自定义元素
@@ -346,20 +401,101 @@ const categories = [
   },
 ];
 
+// ---------- 路由（history API）：/components/<name> 与 /tokens、/install ----------
+// GitHub Pages 静态站：history 路由由前端 SPA 接管，直接访问深链需服务端 fallback（Pages 不支持），
+// 故深链仅作客户端跳转用；刷新深链会 404，需配合 Pages 的 404.html 或保持根路径访问。
+const ROUTES = {
+  home: '/',
+  components: '/components',
+  tokens: '/tokens',
+  install: '/install',
+} as const;
+
+function routePath(component?: string): string {
+  if (!component) return ROUTES.components;
+  return `${ROUTES.components}/${component}`;
+}
+
+function currentRoute(): string {
+  const p = window.location.pathname;
+  // 去掉 base（PAGES_BASE）
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  return p.startsWith(base) ? p.slice(base.length) || '/' : p;
+}
+
+function navigate(path: string, replace = false) {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const full = base + (path.startsWith('/') ? path : '/' + path);
+  if (replace) window.history.replaceState(null, '', full);
+  else window.history.pushState(null, '', full);
+  renderRoute();
+}
+
+// 解析当前路由 → { page, component? }
+function parseRoute(): { page: string; component?: string } {
+  const p = currentRoute();
+  if (p === '/' || p === '') return { page: 'home' };
+  if (p === ROUTES.components) return { page: 'components' };
+  if (p.startsWith(ROUTES.components + '/')) {
+    const comp = p.slice(ROUTES.components.length + 1);
+    return { page: 'components', component: comp };
+  }
+  if (p === ROUTES.tokens) return { page: 'tokens' };
+  if (p === ROUTES.install) return { page: 'install' };
+  return { page: 'home' };
+}
+
+function renderRoute() {
+  const { page, component } = parseRoute();
+  // 显示对应视图：落地页 / 组件文档 / token / 安装
+  const home = document.getElementById('home')!;
+  const docs = document.getElementById('components')!;
+  const tokens = document.getElementById('tokens')!;
+  const install = document.getElementById('install')!;
+  home.style.display = page === 'home' ? '' : 'none';
+  docs.style.display = page === 'components' ? '' : 'none';
+  tokens.style.display = page === 'tokens' ? '' : 'none';
+  install.style.display = page === 'install' ? '' : 'none';
+
+  if (page === 'components' && component) {
+    // 滚动到具体组件 + 高亮导航
+    const section = document.getElementById('c-' + component);
+    if (section) {
+      // 高亮对应 nav
+      document.querySelectorAll('.docs-nav [data-nav]').forEach((a) => {
+        a.classList.toggle('active', a.getAttribute('data-nav') === component);
+      });
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  if (page === 'components' && !component) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
 // ---------- 渲染：顶部导航 ----------
 function renderTopNav() {
   const nav = document.createElement('header');
   nav.className = 'topnav';
   nav.innerHTML = `
-    <a class="topnav-brand" href="#home">AlaiDesign</a>
+    <a class="topnav-brand" data-route="${ROUTES.home}" href="#">AlaiDesign</a>
     <nav class="topnav-links">
-      <a href="#home">概览</a>
-      <a href="#components" data-goto-docs>组件</a>
-      <a href="#tokens">设计 Token</a>
-      <a href="#install">安装</a>
+      <a data-route="${ROUTES.home}" href="#">概览</a>
+      <a data-route="${ROUTES.components}" data-goto-docs href="#">组件</a>
+      <a data-route="${ROUTES.tokens}" href="#">设计 Token</a>
+      <a data-route="${ROUTES.install}" href="#">安装</a>
     </nav>
-    <a class="topnav-cta" href="#install">快速开始</a>`;
+    <a class="topnav-cta" data-route="${ROUTES.install}" href="#">快速开始</a>`;
   document.getElementById('app')!.prepend(nav);
+
+  // 导航点击 → history 路由
+  nav.querySelectorAll('[data-route]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const r = a.getAttribute('data-route')!;
+      navigate(r);
+    });
+  });
 }
 
 // ---------- 渲染：落地页（Hero + 能力亮点 + 快速开始） ----------
@@ -375,8 +511,8 @@ function renderLanding() {
         <p class="hero-sub">高能量设计体系与组件库 — 一次集成，Svelte / Vue / React 三端通用。
         数据密集的中后台场景，既有克制的专业，也有强烈的视觉冲击。</p>
         <div class="hero-actions">
-          <alu-button size="lg">开始使用</alu-button>
-          <alu-button size="lg" variant="outline">查看组件</alu-button>
+          <alu-button size="lg" data-route="${ROUTES.install}">开始使用</alu-button>
+          <alu-button size="lg" variant="outline" data-route="${ROUTES.components}">查看组件</alu-button>
         </div>
         <div class="hero-stats">
           <div><strong>114</strong><span>组件</span></div>
@@ -403,6 +539,14 @@ function renderLanding() {
       <div class="code-tabs" data-code-tabs="install"></div>
     </div>`;
   document.getElementById('app')!.appendChild(el);
+
+  // Hero CTA → history 路由
+  el.querySelectorAll('[data-route]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigate(a.getAttribute('data-route')!);
+    });
+  });
 }
 
 // ---------- 渲染：组件文档站（分类导航 + live demo + 三框架代码 tab + 复制） ----------
@@ -419,7 +563,7 @@ function renderDocs() {
       .map(
         (c) =>
           `<div class="cat"><div class="cat-name">${c.name}</div><div class="cat-desc">${c.desc}</div>${c.items
-            .map((i) => `<a href="#c-${i}" data-nav="${i}" class="nav-item">${i}</a>`)
+            .map((i) => `<a href="#" data-nav="${i}" data-route="${routePath(i)}" class="nav-item">${i}</a>`)
             .join('')}</div>`,
       )
       .join('');
@@ -430,12 +574,8 @@ function renderDocs() {
     .map((c) =>
       c.items
         .map((i) => {
-          const hasCode = !!CODE[i];
-          return `<section class="demo-section" id="c-${i}" data-component="${i}">
-            <h2>${i}</h2>
-            <div class="demo-box" data-demo="${i}"></div>
-            ${hasCode ? `<div class="code-tabs" data-code-tabs="${i}"></div>` : ''}
-          </section>`;
+          const doc = componentDocs.find((d) => d.key === i);
+          return doc ? renderComponentSection(doc) : `<section class="demo-section" id="c-${i}"><h2>${i}</h2><div class="demo-box" data-demo="${i}"></div></section>`;
         })
         .join(''),
     )
@@ -445,29 +585,130 @@ function renderDocs() {
   wrap.appendChild(main);
   document.getElementById('app')!.appendChild(wrap);
 
-  // 填充 live demo
+  // 填充 live demo（组件 section 内的 demo-box + 落地页 hero-demo）
   wrap.querySelectorAll('[data-demo]').forEach((box) => {
     const type = box.getAttribute('data-demo')!;
     box.innerHTML = DEMOS[type] ?? '<p>暂无 demo</p>';
   });
-  // 填充三框架代码 tab
+  // 填充代码 tab（四框架：Svelte / Web Components / Vue / React）
   renderCodeTabs(wrap);
-  // 导航点击高亮
+  // 填充参数表（alu-data-table）
+  fillParamTables(wrap);
+  // 导航点击 → history 路由
   aside.querySelectorAll('[data-nav]').forEach((a) => {
-    a.addEventListener('click', () => {
-      aside.querySelectorAll('.nav-item').forEach((x) => x.classList.remove('active'));
-      a.classList.add('active');
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigate(a.getAttribute('data-route')!);
     });
   });
 }
 
+// 渲染单个组件文档 section（描述 + demo + 参数表 + 代码 + 注意事项）
+function renderComponentSection(doc: ComponentDoc): string {
+  const hasCode = Object.values(doc.code).some((c) => c);
+  return `<section class="demo-section" id="c-${doc.key}" data-component="${doc.key}">
+    <h2>${doc.title}</h2>
+    <p class="comp-desc">${doc.description}</p>
+    <div class="demo-box" data-demo="${doc.key}"></div>
+    ${doc.props.length ? `<div class="api-block"><h3>属性</h3><div class="param-table" data-param-table="${doc.key}"></div></div>` : ''}
+    ${doc.events && doc.events.length ? `<div class="api-block"><h3>事件</h3><div class="param-table" data-event-table="${doc.key}"></div></div>` : ''}
+    ${doc.slots && doc.slots.length ? `<div class="api-block"><h3>插槽</h3><div class="param-table" data-slot-table="${doc.key}"></div></div>` : ''}
+    ${doc.children && doc.children.length ? `<div class="api-block"><h3>子元素</h3><div class="param-table" data-child-table="${doc.key}"></div></div>` : ''}
+    ${hasCode ? `<div class="code-tabs" data-code-tabs="${doc.key}"></div>` : ''}
+    ${doc.notes && doc.notes.length ? `<div class="api-block"><h3>注意事项</h3><ul class="notes-list">${doc.notes.map((n) => `<li>${n}</li>`).join('')}</ul></div>` : ''}
+  </section>`;
+}
+
+// 用 alu-data-table 渲染参数/事件/插槽/子元素表（columns+data JSON 字符串）
+function fillParamTables(scope: ParentNode) {
+  scope.querySelectorAll('[data-param-table]').forEach((box) => {
+    const key = box.getAttribute('data-param-table')!;
+    const doc = componentDocs.find((d) => d.key === key);
+    if (!doc) return;
+    box.innerHTML = renderApiTable(
+      [
+        { key: 'name', title: '属性' },
+        { key: 'type', title: '类型' },
+        { key: 'default', title: '默认值' },
+        { key: 'desc', title: '说明' },
+      ],
+      doc.props.map((p: ApiProp) => ({ name: p.name, type: p.type, default: p.default ?? '—', desc: p.desc })),
+    );
+  });
+  scope.querySelectorAll('[data-event-table]').forEach((box) => {
+    const key = box.getAttribute('data-event-table')!;
+    const doc = componentDocs.find((d) => d.key === key);
+    if (!doc?.events) return;
+    box.innerHTML = renderApiTable(
+      [
+        { key: 'name', title: '事件' },
+        { key: 'payload', title: 'payload' },
+        { key: 'desc', title: '说明' },
+      ],
+      doc.events.map((e: ApiEvent) => ({ name: e.name, payload: e.payload ?? '—', desc: e.desc })),
+    );
+  });
+  scope.querySelectorAll('[data-slot-table]').forEach((box) => {
+    const key = box.getAttribute('data-slot-table')!;
+    const doc = componentDocs.find((d) => d.key === key);
+    if (!doc?.slots) return;
+    box.innerHTML = renderApiTable(
+      [
+        { key: 'name', title: '插槽' },
+        { key: 'desc', title: '说明' },
+      ],
+      doc.slots.map((s: ApiSlot) => ({ name: s.name, desc: s.desc })),
+    );
+  });
+  scope.querySelectorAll('[data-child-table]').forEach((box) => {
+    const key = box.getAttribute('data-child-table')!;
+    const doc = componentDocs.find((d) => d.key === key);
+    if (!doc?.children) return;
+    box.innerHTML = renderApiTable(
+      [
+        { key: 'tag', title: '子元素' },
+        { key: 'desc', title: '说明' },
+      ],
+      doc.children.map((c) => ({ tag: c.tag, desc: c.desc })),
+    );
+  });
+}
+
+// alu-data-table 渲染（columns/data 以 JSON 字符串传入 — Web Components 属性限制）
+function renderApiTable(columns: Array<{ key: string; title: string }>, data: Array<Record<string, string>>): string {
+  return `<alu-data-table
+    columns='${JSON.stringify(columns)}'
+    data='${JSON.stringify(data)}'
+    empty-text="无"
+  ></alu-data-table>`;
+}
+
+// history popstate（浏览器前进/后退）
+window.addEventListener('popstate', () => {
+  renderRoute();
+});
+
 function renderCodeTabs(scope: ParentNode) {
   const codeTabs = scope.querySelectorAll('[data-code-tabs]');
   codeTabs.forEach((el) => {
-    const tab = el.getAttribute('data-code-tabs')!;
-    const snippets = CODE[tab];
-    if (!snippets) return;
-    const tabNames = ['Web Components', 'Vue', 'React'];
+    const key = el.getAttribute('data-code-tabs')!;
+    // 代码片段来源：componentDocs.code（组件族）或 CODE 表（install）
+    const doc = componentDocs.find((d) => d.key === key);
+    let snippets: Record<string, string> | undefined;
+    let tabNames: string[];
+    if (doc) {
+      snippets = {
+        Svelte: doc.code.svelte,
+        'Web Components': doc.code.web,
+        Vue: doc.code.vue,
+        React: doc.code.react,
+      };
+      tabNames = ['Svelte', 'Web Components', 'Vue', 'React'].filter((n) => snippets![n]);
+    } else {
+      snippets = CODE[key];
+      tabNames = snippets ? ['Svelte', 'Web Components', 'Vue', 'React'].filter((n) => snippets![n]) : [];
+    }
+    if (!snippets || !tabNames.length) return;
     el.innerHTML =
       `<div class="code-tabs-head">` +
       tabNames
@@ -477,7 +718,7 @@ function renderCodeTabs(scope: ParentNode) {
       tabNames
         .map(
           (n, i) =>
-            `<pre class="code-block" data-code-block="${n}" style="${i === 0 ? '' : 'display:none'}"><code>${escapeHtml(snippets[n] ?? '')}</code></pre>`,
+            `<pre class="code-block" data-code-block="${n}" style="${i === 0 ? '' : 'display:none'}"><code>${escapeHtml(snippets![n] ?? '')}</code></pre>`,
         )
         .join('');
     el.querySelectorAll('[data-tab-btn]').forEach((btn) => {

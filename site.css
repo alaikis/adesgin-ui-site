@@ -283,8 +283,43 @@ body {
   font-size: 22px;
   font-weight: 600;
   color: var(--foreground, #fff);
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
   text-transform: capitalize;
+}
+
+.comp-desc {
+  color: var(--foreground-secondary, #a1a7b3);
+  margin: 0 0 1.25rem;
+  max-width: 720px;
+}
+
+.api-block {
+  margin: 1.5rem 0;
+}
+
+.api-block h3 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--foreground, #fff);
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border, #33363f);
+}
+
+.param-table {
+  background: transparent;
+}
+
+.notes-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--foreground-secondary, #a1a7b3);
+  font-size: 13px;
+}
+
+.notes-list li {
+  margin: 0.25rem 0;
 }
 
 .demo-box {
