@@ -17,6 +17,8 @@
     "@alaikis/alaidesign-ui": "file:./source/AlaiDesign/packages/core"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "tailwindcss": "^4.1.18",
     "vite": "^6.0.0",
     "typescript": "^5.9.3"
   }

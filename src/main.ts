@@ -1,6 +1,7 @@
 // 官网入口：注册 AlaiDesign Web Components（@alaikis/alaidesign-ui），构建完整产品官网 UI。
 // 结构：顶部导航 + 落地页（Hero/能力/快速开始）+ 组件文档站（分类导航 + live demo + 三框架代码 tab）+ 设计 token + 安装。
 import '@alaikis/alaidesign-ui';
+import './tailwind.css';
 import '../site.css';
 import { componentDocs } from './docs/components';
 import type { ComponentDoc, ApiProp, ApiEvent, ApiSlot } from './docs/types';

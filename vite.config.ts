@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -35,7 +36,7 @@ function copyAssetsPlugin() {
 
 export default defineConfig({
   base: process.env.PAGES_BASE ?? '/',
-  plugins: [copyAssetsPlugin()],
+  plugins: [tailwindcss(), copyAssetsPlugin()],
   build: {
     outDir: 'dist',
     rollupOptions: {

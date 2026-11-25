@@ -1,0 +1,82 @@
+/* AlaiDesign 官网 Tailwind（v4）— 将 AlaiDesign 设计 token 映射到 Tailwind 原子类 */
+/* 组件（@alaikis/alaidesign-ui）class 全用 Tailwind 原子类（bg-primary/flex/gap-2/rounded-lg…），
+   这些类需由消费方 Tailwind 提供。官网引入 Tailwind v4 并映射 AlaiDesign token。 */
+@import "tailwindcss";
+
+/* 扫描 AlaiDesign 核心包组件源码 + 官网自身源码，确保用到的原子类都生成 */
+@source "../../AlaiDesign/packages/core/src/**/*.ts";
+@source "../src/**/*.ts";
+@source "../../AlaiDesign/packages/core/dist/**/*.js";
+
+/* 暗黑模式：AlaiDesign 用 .dark class 切换（非媒体查询） */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* 颜色：AlaiDesign light 主题 token → Tailwind 颜色键 */
+  --color-primary: #0052d9;
+  --color-primary-foreground: #ffffff;
+  --color-background: #f3f3f3;
+  --color-foreground: #1f2329;
+  --color-card: #ffffff;
+  --color-card-foreground: #1f2329;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1f2329;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #5a5e66;
+  --color-secondary: #f7f7f7;
+  --color-secondary-foreground: #1f2329;
+  --color-accent: #e8f1ff;
+  --color-accent-bright: #366ef4;
+  --color-accent-foreground: #003a9c;
+  --color-destructive: #e5484d;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #00a86b;
+  --color-success-foreground: #ffffff;
+  --color-warning: #f5a623;
+  --color-warning-foreground: #000000;
+  --color-info: #0052d9;
+  --color-info-foreground: #ffffff;
+  --color-border: #dcdde3;
+  --color-input: #ffffff;
+  --color-ring: #0052d9;
+  --color-background-secondary: #f7f7f7;
+  --color-background-tertiary: #efefef;
+  --color-foreground-secondary: #5a5e66;
+  --color-foreground-tertiary: #949aa4;
+}
+
+/* AlaiDesign 暗色主题变量（与 tokens.css .dark 对齐），由 .dark 类激活 */
+.dark {
+  --primary: #366ef4;
+  --primary-foreground: #ffffff;
+  --background: #0f1015;
+  --foreground: #f3f3f3;
+  --card: #14161c;
+  --card-foreground: #f3f3f3;
+  --popover: #14161c;
+  --muted: #1e2129;
+  --muted-foreground: #a1a7b3;
+  --secondary: #1e2129;
+  --border: #33363f;
+  --input: #1e2129;
+  --ring: #366ef4;
+  --destructive: #ff4d57;
+  --success: #00a86b;
+  --warning: #f5a623;
+  --info: #366ef4;
+}
+
+/* 基础：组件原子类依赖的默认 border 色（AlaiDesign styles.css 的 @layer base） */
+@layer base {
+  * {
+    border-color: var(--border, #dcdde3);
+  }
+  body {
+    background-color: var(--background, #f3f3f3);
+    color: var(--foreground, #1f2329);
+  }
+  .dark body {
+    background-color: var(--background, #0f1015);
+    color: var(--foreground, #f3f3f3);
+  }
+}
