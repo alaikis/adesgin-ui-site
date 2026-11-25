@@ -1,6 +1,8 @@
-/* AlaiDesign 官网站点样式（组件 demo 区用 AlaiDesign 自身组件，此处只补站点布局） */
+/* AlaiDesign 官网样式 — 完整产品官网（落地页 + 组件文档站 + token + 安装） */
 :root {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --brand: #0052d9;
+  --brand-bright: #366ef4;
 }
 
 * {
@@ -16,39 +18,219 @@ body {
 }
 
 #app {
-  display: flex;
   min-height: 100vh;
 }
 
-.sidebar {
-  width: 240px;
-  padding: 2rem 1.5rem;
-  background: var(--sidebar, #0f1015);
-  border-right: 1px solid var(--border, #33363f);
+/* ---------- 顶部导航 ---------- */
+.topnav {
   position: sticky;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
-  flex-shrink: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 2rem;
+  background: rgba(15, 16, 21, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border, #33363f);
 }
 
-.sidebar-title {
-  font-size: 20px;
+.topnav-brand {
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--foreground, #fff);
-  margin-bottom: 1.5rem;
+  text-decoration: none;
 }
 
-.sidebar-title .subtitle {
+.topnav-links {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+}
+
+.topnav-links a {
+  color: var(--foreground-secondary, #a1a7b3);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+
+.topnav-links a:hover {
+  color: var(--foreground, #fff);
+}
+
+.topnav-cta {
+  background: var(--brand, #0052d9);
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  transition: opacity 0.15s;
+}
+
+.topnav-cta:hover {
+  opacity: 0.9;
+}
+
+/* ---------- 落地页 ---------- */
+.landing {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero-tag {
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--brand-bright, #366ef4);
+  background: rgba(54, 110, 244, 0.12);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--foreground, #fff);
+  margin: 0 0 1rem;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--foreground-secondary, #a1a7b3);
+  margin: 0 0 1.5rem;
+  max-width: 460px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.hero-stats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-stats strong {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground, #fff);
+}
+
+.hero-stats span {
+  font-size: 12px;
   color: var(--foreground-tertiary, #7a8190);
-  letter-spacing: 0;
+}
+
+.hero-demo {
+  border: 1px solid var(--border, #33363f);
+  border-radius: 12px;
+  background: var(--card, #14161c);
+  padding: 1rem;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.feature {
+  padding: 1.5rem;
+  border: 1px solid var(--border, #33363f);
+  border-radius: 10px;
+  background: var(--card, #14161c);
+}
+
+.feature h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground, #fff);
+  margin: 0 0 0.5rem;
+}
+
+.feature p {
+  font-size: 13px;
+  color: var(--foreground-secondary, #a1a7b3);
+  margin: 0;
+}
+
+.quickstart {
+  margin-bottom: 2rem;
+}
+
+.quickstart h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground, #fff);
+  margin: 0 0 0.5rem;
+}
+
+.quickstart p {
+  color: var(--foreground-secondary, #a1a7b3);
+  margin: 0 0 1rem;
+}
+
+/* ---------- 组件文档站布局 ---------- */
+.docs-layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.docs-nav {
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding-right: 1rem;
+  border-right: 1px solid var(--border, #33363f);
+}
+
+.docs-nav-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--foreground, #fff);
+  margin-bottom: 1rem;
 }
 
 .cat {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .cat-name {
@@ -56,6 +238,12 @@ body {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  color: var(--foreground-tertiary, #7a8190);
+  margin-bottom: 0.25rem;
+}
+
+.cat-desc {
+  font-size: 12px;
   color: var(--foreground-tertiary, #7a8190);
   margin-bottom: 0.5rem;
 }
@@ -76,23 +264,23 @@ body {
 }
 
 .nav-item.active {
-  background: var(--primary-selected, rgba(54, 110, 244, 0.12));
-  color: var(--accent-bright, #366ef4);
+  background: rgba(54, 110, 244, 0.12);
+  color: var(--brand-bright, #366ef4);
 }
 
-.main {
+.docs-main {
   flex: 1;
-  padding: 2rem;
-  max-width: 900px;
-  overflow-y: auto;
+  min-width: 0;
 }
 
 .demo-section {
   margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border, #33363f);
 }
 
 .demo-section h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--foreground, #fff);
   margin: 0 0 1rem;
@@ -112,11 +300,19 @@ body {
   min-height: 80px;
 }
 
+/* ---------- 代码 tab ---------- */
 .code-tabs {
   border: 1px solid var(--border, #33363f);
   border-radius: 8px;
   overflow: hidden;
   background: var(--card, #14161c);
+}
+
+.code-tabs-head {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border, #33363f);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .code-tab-btn {
@@ -130,8 +326,22 @@ body {
 }
 
 .code-tab-btn.active {
-  color: var(--accent-bright, #366ef4);
-  border-bottom-color: var(--accent-bright, #366ef4);
+  color: var(--brand-bright, #366ef4);
+  border-bottom-color: var(--brand-bright, #366ef4);
+}
+
+.code-copy {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--foreground-tertiary, #7a8190);
+  font-size: 12px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+}
+
+.code-copy:hover {
+  color: var(--foreground, #fff);
 }
 
 .code-block {
@@ -145,6 +355,84 @@ body {
 
 code {
   font-family: 'SF Mono', Monaco, Consolas, monospace;
+}
+
+/* ---------- token 文档页 + 安装页 ---------- */
+.docs-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.docs-page h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground, #fff);
+  margin: 0 0 0.5rem;
+}
+
+.docs-page > p {
+  color: var(--foreground-secondary, #a1a7b3);
+  margin: 0 0 1.5rem;
+}
+
+.token-table {
+  overflow-x: auto;
+}
+
+.token-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.token-grid th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  color: var(--foreground-tertiary, #7a8190);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border, #33363f);
+}
+
+.token-grid td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border, #33363f);
+  color: var(--foreground, #fff);
+}
+
+.tk-name {
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  color: var(--brand-bright, #366ef4);
+}
+
+.swatch {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border, #33363f);
+  vertical-align: middle;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .features {
+    grid-template-columns: 1fr;
+  }
+  .docs-layout {
+    flex-direction: column;
+  }
+  .docs-nav {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border, #33363f);
+    padding: 0 0 1rem;
+  }
 }
 
 /* AlaiDesign 组件在 demo 区需要宿主样式（shadow DOM token 透传由组件内部 :host 处理） */

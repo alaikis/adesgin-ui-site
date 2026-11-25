@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // 构建期将 @alaikis/alaidesign-ui 包的 CSS 产物（tokens.css / styles.css）
-// 复制到 public，供 index.html 直接引用（独立仓从 npm 安装或 source/ 构建，非 monorepo）
-function copyCssPlugin() {
+// 与构建期生成的 tokens.json 复制到 public，供 index.html / 文档站直接引用
+function copyAssetsPlugin() {
   return {
-    name: 'copy-css-to-public',
+    name: 'copy-assets-to-public',
     apply: 'build' as const,
     buildStart() {
       const candidates = [
@@ -24,13 +24,18 @@ function copyCssPlugin() {
           }
         }
       }
+      // tokens.json（构建期 generate-token-docs 产物）
+      const tokenJson = path.resolve(__dirname, 'src/content/tokens.json');
+      if (fs.existsSync(tokenJson)) {
+        fs.copyFileSync(tokenJson, path.join(publicDir, 'tokens.json'));
+      }
     },
   };
 }
 
 export default defineConfig({
   base: process.env.PAGES_BASE ?? '/',
-  plugins: [copyCssPlugin()],
+  plugins: [copyAssetsPlugin()],
   build: {
     outDir: 'dist',
     rollupOptions: {
