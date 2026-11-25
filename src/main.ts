@@ -1,5 +1,5 @@
-// 官网入口：注册 AlaiDesign Web Components，构建演示站 UI。
-import '@alaikis/alaidesign-web';
+// 官网入口：注册 AlaiDesign Web Components（@alaikis/alaidesign-ui），构建演示站 UI。
+import '@alaikis/alaidesign-ui';
 import '../site.css';
 
 // 复制全部组件 demo 到各 demo 容器

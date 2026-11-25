@@ -6,14 +6,14 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// 优先从 node_modules 读取（CI 场景），回退到本地 AlaiDesign 构建产物
+// 优先从 node_modules 读取（CI 场景），回退到 source/AlaiDesign 构建产物
 const candidates = [
-  path.resolve(__dirname, '..', 'node_modules', '@alaikis', 'alaidesign-web', 'dist', 'tokens.css'),
-  path.resolve(__dirname, '..', '..', 'AlaiDesign', 'packages', 'core', 'dist', 'tokens.css'),
+  path.resolve(__dirname, '..', 'node_modules', '@alaikis', 'alaidesign-ui', 'dist', 'tokens.css'),
+  path.resolve(__dirname, '..', 'source', 'AlaiDesign', 'packages', 'core', 'dist', 'tokens.css'),
 ];
 const tokensCssPath = candidates.find((p) => fs.existsSync(p));
 if (!tokensCssPath) {
-  console.error('[generate-token-docs] 未找到 tokens.css，请先 npm install 或构建 @alaikis/alaidesign-web');
+  console.error('[generate-token-docs] 未找到 tokens.css，请先 npm install 并在 source/AlaiDesign 构建 @alaikis/alaidesign-ui');
   process.exit(1);
 }
 console.log('[generate-token-docs] using:', tokensCssPath);

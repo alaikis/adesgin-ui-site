@@ -36,11 +36,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build @alaikis/alaidesign-web
+      - name: Build @alaikis/alaidesign-ui
         run: |
           cd source/AlaiDesign
           npm install --legacy-peer-deps
-          npm run build --workspace=@alaikis/alaidesign-web
+          npm run build --workspace=@alaikis/alaidesign-ui
 
       - name: Build official site
         run: npm run build

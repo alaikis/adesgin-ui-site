@@ -9,7 +9,7 @@ AlaiDesign 组件库的独立官网仓库。
 
 ## 组件依赖
 
-组件来自 npm 包 `@alaikis/alaidesign-web`（Web Components 核心包，独立仓从 npm 安装，非 monorepo workspace）：
+组件来自 npm 包 `@alaikis/alaidesign-ui`（Web Components 核心包，独立仓从 npm 安装或 source/ 构建）：
 
 ```bash
 npm install
@@ -33,5 +33,5 @@ npm run build
 
 ## 与 AlaiDesign 主仓关系
 
-- 组件源：`@alaikis/alaidesign`（Svelte）→ `@alaikis/alaidesign-web`（Web Components 核心）→ 本仓消费
-- 设计 token 单一来源：`@alaikis/alaidesign-web/dist/tokens.css`（构建期解析为 token 文档页）
+- 组件源：`@alaikis/alaidesign`（Svelte）→ `@alaikis/alaidesign-ui`（Web Components 核心）→ 本仓消费
+- 设计 token 单一来源：`@alaikis/alaidesign-ui/dist/tokens.css`（构建期解析为 token 文档页）
