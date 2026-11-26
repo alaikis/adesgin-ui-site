@@ -49,12 +49,7 @@ const DEMOS: Record<string, string> = {
     <alu-checkbox disabled>禁用</alu-checkbox>
     <alu-checkbox indeterminate>不确定</alu-checkbox>`,
   tabs: `
-    <alu-tabs value="overview" orientation="horizontal">
-      <alu-tabs-list><alu-tabs-trigger value="overview">概览</alu-tabs-trigger><alu-tabs-trigger value="history">历史</alu-tabs-trigger><alu-tabs-trigger value="settings">设置</alu-tabs-trigger></alu-tabs-list>
-      <alu-tabs-content value="overview">概览内容 — 包裹统计</alu-tabs-content>
-      <alu-tabs-content value="history">历史内容 — 物流轨迹</alu-tabs-content>
-      <alu-tabs-content value="settings">设置内容 — 偏好配置</alu-tabs-content>
-    </alu-tabs>`,
+    <alu-tabs value="overview"></alu-tabs>`,
   skeleton: `
     <alu-skeleton class="h-4 w-48"></alu-skeleton>
     <alu-skeleton class="h-4 w-32"></alu-skeleton>
@@ -65,43 +60,21 @@ const DEMOS: Record<string, string> = {
       <alu-button variant="outline">悬停我</alu-button>
     </alu-tooltip>`,
   dialog: `
-    <alu-dialog>
-      <alu-dialog-trigger><alu-button variant="secondary">打开对话框</alu-button></alu-dialog-trigger>
-      <alu-dialog-content>
-        <alu-dialog-header><alu-dialog-title>运单详情</alu-dialog-title><alu-dialog-description>查看包裹 SH-20261124-001 的完整轨迹。</alu-dialog-description></alu-dialog-header>
-        <alu-dialog-footer><alu-button variant="ghost">取消</alu-button><alu-button>确认</alu-button></alu-dialog-footer>
-      </alu-dialog-content>
+    <alu-dialog trigger="打开对话框" title="运单详情" description="查看包裹 SH-20261124-001 的完整轨迹。">
+      <p>这是对话框正文，可放置任意内容（默认 slot）。</p>
     </alu-dialog>`,
   'data-table': `
-    <alu-data-table
-      columns='${JSON.stringify([
-        { key: 'id', title: '订单号', sortable: true },
-        { key: 'tracking', title: '运单号' },
-        { key: 'carrier', title: '承运商' },
-        { key: 'status', title: '状态' },
-        { key: 'weight', title: '重量', align: 'right' },
-      ])}'
-      data='${JSON.stringify(mockShipments)}'
-      pagination='${JSON.stringify({ total: mockShipments.length, pageSize: 4 })}'
-      empty-text="暂无运单数据"></alu-data-table>`,
+    <alu-data-table empty-text="暂无运单数据"></alu-data-table>`,
   search: `
-    <alu-search-bar placeholder="搜索运单号 / 订单号…" clearable loading="false"></alu-search-bar>`,
+    <alu-search-bar placeholder="搜索运单号 / 订单号…" clearable></alu-search-bar>`,
   switch: `
     <alu-switch checked></alu-switch>
     <alu-switch></alu-switch>
     <alu-switch disabled></alu-switch>`,
   'radio-group': `
-    <alu-radio-group value="a">
-      <alu-radio-group-item value="a">选项 A</alu-radio-group-item>
-      <alu-radio-group-item value="b">选项 B</alu-radio-group-item>
-      <alu-radio-group-item value="c">选项 C</alu-radio-group-item>
-    </alu-radio-group>`,
+    <alu-radio-group value="a"></alu-radio-group>`,
   select: `
-    <alu-select placeholder="选择承运商" value="ups">
-      <alu-option value="ups">UPS</alu-option>
-      <alu-option value="dhl">DHL</alu-option>
-      <alu-option value="dpd">DPD</alu-option>
-    </alu-select>`,
+    <alu-select placeholder="选择承运商" value="ups"></alu-select>`,
   textarea: `
     <alu-form-field label="备注">
       <alu-textarea placeholder="填写配送备注…"></alu-textarea>
@@ -117,9 +90,9 @@ const DEMOS: Record<string, string> = {
   'page-header': `
     <alu-page-header title="运单管理" description="创建、查询与管理跨境运单" icon="lucide:package"></alu-page-header>`,
   avatar: `
-    <alu-avatar><alu-avatar-image src="https://i.pravatar.cc/80" alt="用户" /><alu-avatar-fallback>张</alu-avatar-fallback></alu-avatar>
-    <alu-avatar size="sm"><alu-avatar-fallback>李</alu-avatar-fallback></alu-avatar>
-    <alu-avatar size="lg"><alu-avatar-fallback>王</alu-avatar-fallback></alu-avatar>`,
+    <alu-avatar src="https://i.pravatar.cc/80" alt="用户" fallback="张"></alu-avatar>
+    <alu-avatar size="sm" fallback="李"></alu-avatar>
+    <alu-avatar size="lg" fallback="王"></alu-avatar>`,
   breadcrumb: `
     <alu-breadcrumb>
       <alu-breadcrumb-item href="#">首页</alu-breadcrumb-item>
@@ -137,29 +110,23 @@ const DEMOS: Record<string, string> = {
       </alu-item>
     </alu-item-group>`,
   sheet: `
-    <alu-sheet>
-      <alu-sheet-trigger><alu-button variant="outline">打开抽屉</alu-button></alu-sheet-trigger>
-      <alu-sheet-content side="right">
-        <alu-sheet-header><alu-sheet-title>运单详情</alu-sheet-title><alu-sheet-description>SH-20261124-001</alu-sheet-description></alu-sheet-header>
-        <alu-sheet-footer><alu-button variant="ghost">关闭</alu-button><alu-button>确认</alu-button></alu-sheet-footer>
-      </alu-sheet-content>
+    <alu-sheet trigger="打开抽屉" title="运单详情" description="SH-20261124-001" side="right">
+      <p>这是抽屉正文，可放置任意内容（默认 slot）。</p>
     </alu-sheet>`,
   'dropdown-menu': `
-    <alu-dropdown-menu>
-      <alu-dropdown-menu-trigger><alu-button variant="outline">操作</alu-button></alu-dropdown-menu-trigger>
-      <alu-dropdown-menu-content>
-        <alu-dropdown-menu-item>查看轨迹</alu-dropdown-menu-item>
-        <alu-dropdown-menu-item>打印标签</alu-dropdown-menu-item>
-        <alu-dropdown-menu-separator></alu-dropdown-menu-separator>
-        <alu-dropdown-menu-item variant="destructive">删除运单</alu-dropdown-menu-item>
-      </alu-dropdown-menu-content>
-    </alu-dropdown-menu>`,
+    <alu-dropdown-menu trigger="操作"></alu-dropdown-menu>`,
   pagination: `
     <alu-pagination count="100" per-page="10" page="1" sibling-count="1"></alu-pagination>`,
   'date-picker': `
     <alu-form-field label="提货日期">
-      <alu-date-picker placeholder="YYYY-MM-DD" value="2026-11-24"></alu-date-picker>
+      <alu-date-picker></alu-date-picker>
     </alu-form-field>`,
+  'form-field': `
+    <alu-form-field label="手机号" required helper-text="用于接收物流通知">
+      <alu-input placeholder="请输入手机号"></alu-input>
+    </alu-form-field>`,
+  'skeleton-card': `
+    <alu-skeleton-card></alu-skeleton-card>`,
   'signature-pad': `
     <alu-signature-pad width="300" height="150" placeholder="在此签名"></alu-signature-pad>`,
   sonner: `
@@ -194,7 +161,56 @@ const DEMOS: Record<string, string> = {
     </alu-table>`,
 };
 
-// ---------- 三框架代码片段（Svelte / Web Components / Vue / React 写法） ----------
+// 复杂数据组件的 demo：innerHTML 无法设置数组/对象，注入后通过 property 赋值。
+const DEMO_SETUP: Record<string, (box: Element) => void> = {
+  select: (box) => {
+    const el = box.querySelector('alu-select') as any;
+    if (el) el.options = [
+      { value: 'ups', label: 'UPS' },
+      { value: 'dhl', label: 'DHL' },
+      { value: 'dpd', label: 'DPD' },
+    ];
+  },
+  tabs: (box) => {
+    const el = box.querySelector('alu-tabs') as any;
+    if (el) el.tabs = [
+      { value: 'overview', label: '概览', html: '概览内容 — 包裹统计' },
+      { value: 'history', label: '历史', html: '历史内容 — 物流轨迹' },
+      { value: 'settings', label: '设置', html: '设置内容 — 偏好配置' },
+    ];
+  },
+  'radio-group': (box) => {
+    const el = box.querySelector('alu-radio-group') as any;
+    if (el) el.options = [
+      { value: 'a', label: '选项 A' },
+      { value: 'b', label: '选项 B' },
+      { value: 'c', label: '选项 C' },
+    ];
+  },
+  'dropdown-menu': (box) => {
+    const el = box.querySelector('alu-dropdown-menu') as any;
+    if (el) el.items = [
+      { label: '查看轨迹', value: 'view' },
+      { label: '打印标签', value: 'print' },
+      { separator: true },
+      { label: '删除运单', value: 'delete', destructive: true },
+    ];
+  },
+  'data-table': (box) => {
+    const el = box.querySelector('alu-data-table') as any;
+    if (el) {
+      el.columns = [
+        { key: 'id', title: '订单号', sortable: true },
+        { key: 'tracking', title: '运单号' },
+        { key: 'carrier', title: '承运商' },
+        { key: 'status', title: '状态' },
+        { key: 'weight', title: '重量', align: 'right' },
+      ];
+      el.data = mockShipments;
+      el.pagination = { total: mockShipments.length, pageSize: 4 };
+    }
+  },
+};
 // 组件库主包是 Svelte（@alaikis/alaidesign），故 Svelte tab 用原生 Svelte 组件；
 // 组件文档代码片段已移至 src/docs/components.ts（componentDocs.code）；
 // 此处仅保留 install 安装说明的 snippet（落地页快速开始 + 安装页）。
@@ -206,18 +222,28 @@ function codeFor(_component: string, svelte: string, web: string, vue: string, r
 
 CODE.install = codeFor(
   'install',
-  `npm install @alaikis/alaidesign
-# Svelte 组件库主包
+  `npm install @alaikis/alaidesign @alaikis/alaidesign-ui
+/* 自带 Tailwind CSS（已内置 reset + 原子类 + token），引入一次即可 */
+import '@alaikis/alaidesign-ui/alaidesign.css';
+/* 用法 */
 import { Button } from '@alaikis/alaidesign';
 <Button variant="outline">提交</Button>`,
+  `npm install @alaikis/alaidesign-ui
+/* 自带 Tailwind CSS，无需自行配置 Tailwind */
+import '@alaikis/alaidesign-ui/alaidesign.css';
+import '@alaikis/alaidesign-ui';   // 注册全部 alu-* 元素
+/* 用法 */
+<alu-button variant="outline">提交</alu-button>`,
   `npm install @alaikis/alaidesign-vue @alaikis/alaidesign-ui
-import '@alaikis/alaidesign-ui/styles.css';
-// Vue 3.3+ 需标记自定义元素
+import '@alaikis/alaidesign-ui/alaidesign.css';   // 自带 Tailwind CSS
+import '@alaikis/alaidesign-ui';
+// Vue 3.3+ 标记自定义元素
 app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith('alu-');
 // 使用
 <AluButton variant="outline" />`,
   `npm install @alaikis/alaidesign-react @alaikis/alaidesign-ui
-import '@alaikis/alaidesign-ui/styles.css';
+import '@alaikis/alaidesign-ui/alaidesign.css';   // 自带 Tailwind CSS
+import '@alaikis/alaidesign-ui';
 // 使用
 import { AluButton } from '@alaikis/alaidesign-react';
 <AluButton variant="outline" />`,
@@ -437,9 +463,10 @@ function renderDocs() {
   document.getElementById('app')!.appendChild(wrap);
 
   // 填充 live demo（组件 section 内的 demo-box + 落地页 hero-demo）
-  wrap.querySelectorAll('[data-demo]').forEach((box) => {
+  document.querySelectorAll('[data-demo]').forEach((box) => {
     const type = box.getAttribute('data-demo')!;
     box.innerHTML = DEMOS[type] ?? '<p>暂无 demo</p>';
+    DEMO_SETUP[type]?.(box);
   });
   // 填充代码 tab（四框架：Svelte / Web Components / Vue / React）
   renderCodeTabs(wrap);
@@ -476,7 +503,7 @@ function fillParamTables(scope: ParentNode) {
     const key = box.getAttribute('data-param-table')!;
     const doc = componentDocs.find((d) => d.key === key);
     if (!doc) return;
-    box.innerHTML = renderApiTable(
+    box.replaceChildren(makeApiTable(
       [
         { key: 'name', title: '属性' },
         { key: 'type', title: '类型' },
@@ -484,54 +511,54 @@ function fillParamTables(scope: ParentNode) {
         { key: 'desc', title: '说明' },
       ],
       doc.props.map((p: ApiProp) => ({ name: p.name, type: p.type, default: p.default ?? '—', desc: p.desc })),
-    );
+    ));
   });
   scope.querySelectorAll('[data-event-table]').forEach((box) => {
     const key = box.getAttribute('data-event-table')!;
     const doc = componentDocs.find((d) => d.key === key);
     if (!doc?.events) return;
-    box.innerHTML = renderApiTable(
+    box.replaceChildren(makeApiTable(
       [
         { key: 'name', title: '事件' },
         { key: 'payload', title: 'payload' },
         { key: 'desc', title: '说明' },
       ],
       doc.events.map((e: ApiEvent) => ({ name: e.name, payload: e.payload ?? '—', desc: e.desc })),
-    );
+    ));
   });
   scope.querySelectorAll('[data-slot-table]').forEach((box) => {
     const key = box.getAttribute('data-slot-table')!;
     const doc = componentDocs.find((d) => d.key === key);
     if (!doc?.slots) return;
-    box.innerHTML = renderApiTable(
+    box.replaceChildren(makeApiTable(
       [
         { key: 'name', title: '插槽' },
         { key: 'desc', title: '说明' },
       ],
       doc.slots.map((s: ApiSlot) => ({ name: s.name, desc: s.desc })),
-    );
+    ));
   });
   scope.querySelectorAll('[data-child-table]').forEach((box) => {
     const key = box.getAttribute('data-child-table')!;
     const doc = componentDocs.find((d) => d.key === key);
     if (!doc?.children) return;
-    box.innerHTML = renderApiTable(
+    box.replaceChildren(makeApiTable(
       [
         { key: 'tag', title: '子元素' },
         { key: 'desc', title: '说明' },
       ],
       doc.children.map((c) => ({ tag: c.tag, desc: c.desc })),
-    );
+    ));
   });
 }
 
-// alu-data-table 渲染（columns/data 以 JSON 字符串传入 — Web Components 属性限制）
-function renderApiTable(columns: Array<{ key: string; title: string }>, data: Array<Record<string, string>>): string {
-  return `<alu-data-table
-    columns='${JSON.stringify(columns)}'
-    data='${JSON.stringify(data)}'
-    empty-text="无"
-  ></alu-data-table>`;
+// alu-data-table 渲染：columns/data 通过 property 赋值（Web Components 复杂数据约定）
+function makeApiTable(columns: Array<{ key: string; title: string }>, data: Array<Record<string, string>>): HTMLElement {
+  const table = document.createElement('alu-data-table');
+  table.setAttribute('empty-text', '无');
+  (table as any).columns = columns;
+  (table as any).data = data;
+  return table;
 }
 
 // history popstate（浏览器前进/后退）
@@ -633,7 +660,7 @@ function renderTokenAndInstall() {
   installSection.className = 'docs-page';
   installSection.id = 'install';
   installSection.innerHTML =
-    '<h2>安装</h2><p>npm 安装三框架 wrapper，CSS 注入一次即可。Web Components 核心包 <code>@alaikis/alaidesign-ui</code> 提供统一渲染。</p>' +
+    '<h2>安装</h2><p>npm 安装三框架 wrapper。<code>@alaikis/alaidesign-ui</code> <strong>自带 Tailwind CSS</strong>（已内置 reset + 原子类 + 设计 token + 组件 scoped 样式），只需 <code>import "@alaikis/alaidesign-ui/alaidesign.css"</code> 一次即可，无需自行配置 Tailwind。</p>' +
     '<div class="code-tabs" data-code-tabs="install"></div>';
   app.appendChild(installSection);
   renderCodeTabs(installSection);

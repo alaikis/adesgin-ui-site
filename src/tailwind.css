@@ -1,18 +1,19 @@
 /* AlaiDesign 官网 Tailwind（v4）— 将 AlaiDesign 设计 token 映射到 Tailwind 原子类 */
-/* 组件（@alaikis/alaidesign-ui）class 全用 Tailwind 原子类（bg-primary/flex/gap-2/rounded-lg…），
-   这些类需由消费方 Tailwind 提供。官网引入 Tailwind v4 并映射 AlaiDesign token。 */
 @import "tailwindcss";
+/* 组件自带的 scoped 样式（signature-pad / data-table 等 <style>） */
+@import "../source/AlaiDesign/packages/core/dist/components/alaidesign.css";
 
-/* 扫描 AlaiDesign 核心包组件源码 + 官网自身源码，确保用到的原子类都生成 */
-@source "../../AlaiDesign/packages/core/src/**/*.ts";
+/* 扫描真实依赖（source/AlaiDesign）与官网源码，保证 local 与 CI 都能生成原子类 */
+@source "../source/AlaiDesign/packages/core/dist/**/*.js";
+@source "../source/AlaiDesign/packages/core/src/**/*.svelte";
+@source "../source/AlaiDesign/packages/core/src/**/*.ts";
 @source "../src/**/*.ts";
-@source "../../AlaiDesign/packages/core/dist/**/*.js";
+@source "../index.html";
 
 /* 暗黑模式：AlaiDesign 用 .dark class 切换（非媒体查询） */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* 颜色：AlaiDesign light 主题 token → Tailwind 颜色键 */
   --color-primary: #0052d9;
   --color-primary-foreground: #ffffff;
   --color-background: #f3f3f3;
@@ -45,38 +46,46 @@
   --color-foreground-tertiary: #949aa4;
 }
 
-/* AlaiDesign 暗色主题变量（与 tokens.css .dark 对齐），由 .dark 类激活 */
+/* 暗色主题：直接覆盖 Tailwind 的 --color-* 变量（Tailwind v4 才能生效） */
 .dark {
-  --primary: #366ef4;
-  --primary-foreground: #ffffff;
-  --background: #0f1015;
-  --foreground: #f3f3f3;
-  --card: #14161c;
-  --card-foreground: #f3f3f3;
-  --popover: #14161c;
-  --muted: #1e2129;
-  --muted-foreground: #a1a7b3;
-  --secondary: #1e2129;
-  --border: #33363f;
-  --input: #1e2129;
-  --ring: #366ef4;
-  --destructive: #ff4d57;
-  --success: #00a86b;
-  --warning: #f5a623;
-  --info: #366ef4;
+  --color-primary: #366ef4;
+  --color-primary-foreground: #ffffff;
+  --color-background: #0f1015;
+  --color-foreground: #f3f3f3;
+  --color-card: #14161c;
+  --color-card-foreground: #f3f3f3;
+  --color-popover: #14161c;
+  --color-popover-foreground: #f3f3f3;
+  --color-muted: #1e2129;
+  --color-muted-foreground: #a1a7b3;
+  --color-secondary: #1e2129;
+  --color-secondary-foreground: #f3f3f3;
+  --color-accent: #1b2a44;
+  --color-accent-foreground: #cfe0ff;
+  --color-destructive: #ff4d57;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #00a86b;
+  --color-warning: #f5a623;
+  --color-info: #366ef4;
+  --color-border: #33363f;
+  --color-input: #1e2129;
+  --color-ring: #366ef4;
+  --color-background-secondary: #14161c;
+  --color-background-tertiary: #1e2129;
+  --color-foreground-secondary: #a1a7b3;
+  --color-foreground-tertiary: #6b7280;
 }
 
-/* 基础：组件原子类依赖的默认 border 色（AlaiDesign styles.css 的 @layer base） */
 @layer base {
   * {
-    border-color: var(--border, #dcdde3);
+    border-color: var(--color-border, #dcdde3);
   }
   body {
-    background-color: var(--background, #f3f3f3);
-    color: var(--foreground, #1f2329);
+    background-color: var(--color-background, #f3f3f3);
+    color: var(--color-foreground, #1f2329);
   }
   .dark body {
-    background-color: var(--background, #0f1015);
-    color: var(--foreground, #f3f3f3);
+    background-color: var(--color-background, #0f1015);
+    color: var(--color-foreground, #f3f3f3);
   }
 }

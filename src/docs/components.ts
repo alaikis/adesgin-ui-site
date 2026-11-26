@@ -81,7 +81,7 @@ aluBtn.addEventListener('click', (e) => { /* 处理 */ });`,
       { name: 'required', type: 'boolean', default: 'false', desc: '必填' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
-    events: [{ name: 'input', payload: '{ value: string }', desc: '输入时触发（Web Components）' }],
+    events: [{ name: 'input', payload: 'event.target.value（原生 input 事件）', desc: '输入时触发' }],
     code: {
       svelte: `<script>\n  import { Input } from '@alaikis/alaidesign';\n  let value = '';\n</script>\n<Input bind:value placeholder="运单号" />`,
       web: `<alu-input placeholder="运单号" value=""></alu-input>
@@ -102,7 +102,7 @@ aluInput.addEventListener('input', (e) => e.detail.value);`,
       { name: 'value', type: 'string', desc: '表单 value' },
       { name: 'children', type: 'Snippet', desc: '标签文本' },
     ],
-    events: [{ name: 'change', payload: '{ checked: boolean; indeterminate: boolean }', desc: '勾选变化' }],
+    events: [{ name: 'change', payload: '{ checked: boolean }', desc: '勾选变化' }],
     code: {
       svelte: `<script>\n  import { Checkbox } from '@alaikis/alaidesign';\n  let checked = false;\n</script>\n<Checkbox bind:checked>同意条款</Checkbox>`,
       web: `<alu-checkbox>同意条款</alu-checkbox>
@@ -114,23 +114,27 @@ aluCheckbox.addEventListener('change', (e) => e.detail.checked);`,
   {
     key: 'select',
     title: 'Select 下拉选择',
-    description: '原生 select 封装，支持 placeholder、禁用。选项通过 alu-option 子元素提供。',
+    description: '原生 select 封装，支持 placeholder、禁用。选项通过原生 <option> 子元素提供。',
     props: [
       { name: 'value', type: 'string', desc: '选中值（双向）' },
       { name: 'placeholder', type: 'string', desc: '未选中时占位文本' },
+      { name: 'options', type: 'Array<{ value: string; label: string; disabled?: boolean }>', desc: '选项（property 赋值；Web Components 推荐）' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
-    events: [{ name: 'change', payload: '{ value: string }', desc: '选项变化' }],
-    slots: [{ name: 'options', desc: '<alu-option value="...">文本</alu-option>' }],
+    events: [{ name: 'change', payload: 'event.target.value（原生 change 事件）', desc: '选项变化' }],
+    slots: [{ name: 'default', desc: '（Svelte 用法）原生 <option> 子元素；Web Components 请改用 options 属性' }],
     code: {
       svelte: `<script>\n  import { Select } from '@alaikis/alaidesign';\n  let value = 'ups';\n</script>\n<Select bind:value placeholder="选择承运商">\n  <option value="ups">UPS</option>\n  <option value="dhl">DHL</option>\n</Select>`,
-      web: `<alu-select placeholder="选择承运商" value="ups">
-  <alu-option value="ups">UPS</alu-option>
-  <alu-option value="dhl">DHL</alu-option>
-</alu-select>`,
-      vue: `<AluSelect v-model="value" placeholder="选择承运商"><AluOption value="ups">UPS</AluOption></AluSelect>`,
-      react: `<AluSelect value={value} onChange={(v) => setValue(v)} placeholder="选择承运商">{options}</AluSelect>`,
+      web: `<alu-select id="sel" placeholder="选择承运商" value="ups"></alu-select>
+<script>
+  document.querySelector('#sel').options = [
+    { value: 'ups', label: 'UPS' },
+    { value: 'dhl', label: 'DHL' },
+  ];
+</script>`,
+      vue: `<AluSelect v-model="value" placeholder="选择承运商" :options="options" />`,
+      react: `<AluSelect value={value} options={options} placeholder="选择承运商" onChange={(e) => setValue(e.target.value)} />`,
     },
   },
   {
@@ -162,7 +166,7 @@ aluSwitch.addEventListener('change', (e) => e.detail.checked);`,
       { name: 'required', type: 'boolean', default: 'false', desc: '必填' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
-    events: [{ name: 'input', payload: '{ value: string }', desc: '输入' }],
+    events: [{ name: 'input', payload: 'event.target.value（原生 input 事件）', desc: '输入' }],
     code: {
       svelte: `<script>\n  import { Textarea } from '@alaikis/alaidesign';\n  let value = '';\n</script>\n<Textarea bind:value placeholder="填写备注…" />`,
       web: `<alu-textarea placeholder="填写备注…" value=""></alu-textarea>`,
@@ -188,27 +192,20 @@ aluSwitch.addEventListener('change', (e) => e.detail.checked);`,
   {
     key: 'avatar',
     title: 'Avatar 头像',
-    description: '用户头像，图片加载失败时降级为 fallback 文本/徽标。支持 sm/default/lg 尺寸与 AvatarGroup 重叠。',
+    description: '用户头像，图片加载失败或无 src 时降级为 fallback 文本。单元素 API：src / alt / fallback / size（sm/default/lg）。',
     props: [
+      { name: 'src', type: 'string', desc: '头像图片地址' },
+      { name: 'alt', type: 'string', desc: '图片替代文本' },
+      { name: 'fallback', type: 'string', desc: '图片失败 / 无 src 时显示的回退文本' },
       { name: 'size', type: "'default' | 'sm' | 'lg'", default: "'default'", desc: '尺寸' },
       { name: 'class', type: 'string', desc: '追加类名' },
-      { name: 'children', type: 'Snippet', desc: '内部放 alu-avatar-image + alu-avatar-fallback' },
-    ],
-    children: [
-      { tag: 'alu-avatar-image', desc: '头像图片（src / alt）' },
-      { tag: 'alu-avatar-fallback', desc: '图片失败时的回退内容' },
-      { tag: 'alu-avatar-group', desc: '头像组（-space-x 重叠）' },
-      { tag: 'alu-avatar-group-count', desc: '头像组 +N 计数' },
-      { tag: 'alu-avatar-badge', desc: '头像状态徽标' },
     ],
     code: {
       svelte: `<Avatar>\n  <AvatarImage src="https://i.pravatar.cc/80" alt="用户" />\n  <AvatarFallback>张</AvatarFallback>\n</Avatar>`,
-      web: `<alu-avatar>
-  <alu-avatar-image src="https://i.pravatar.cc/80" alt="用户"></alu-avatar-image>
-  <alu-avatar-fallback>张</alu-avatar-fallback>
-</alu-avatar>`,
-      vue: `<AluAvatar><AluAvatarImage src="https://i.pravatar.cc/80" alt="用户" /><AluAvatarFallback>张</AluAvatarFallback></AluAvatar>`,
-      react: `<AluAvatar><AluAvatarImage src="https://i.pravatar.cc/80" alt="用户" /><AluAvatarFallback>张</AluAvatarFallback></AluAvatar>`,
+      web: `<alu-avatar src="https://i.pravatar.cc/80" alt="用户" fallback="张"></alu-avatar>
+<alu-avatar size="lg" fallback="王"></alu-avatar>`,
+      vue: `<AluAvatar src="https://i.pravatar.cc/80" alt="用户" fallback="张" />`,
+      react: `<AluAvatar src="https://i.pravatar.cc/80" alt="用户" fallback="张" />`,
     },
   },
 
@@ -216,29 +213,28 @@ aluSwitch.addEventListener('change', (e) => e.detail.checked);`,
   {
     key: 'tabs',
     title: 'Tabs 选项卡',
-    description: '在多个平级面板间切换。由 Tabs + TabsList/TabsTrigger/TabsContent 组成，键盘可切换。',
+    description: '在多个平级面板间切换（键盘可切换）。Web Components 为单元素 API：通过 tabs 属性传入 [{ value, label, html }] 数组。',
     props: [
+      { name: 'tabs', type: 'Array<{ value: string; label: string; html?: string }>', desc: '页签定义（通过 property 赋值，非 attribute）' },
       { name: 'value', type: 'string', desc: '当前激活 tab 值（双向）' },
-      { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", desc: '方向' },
+      { name: 'variant', type: "'default' | 'line'", default: "'default'", desc: '列表样式' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
     events: [{ name: 'tab-change', payload: '{ value: string }', desc: '切换 tab 时触发' }],
-    children: [
-      { tag: 'alu-tabs-list', desc: 'tab 按钮容器（role=tablist）' },
-      { tag: 'alu-tabs-trigger', desc: '单个 tab 按钮（value 属性）' },
-      { tag: 'alu-tabs-content', desc: 'tab 内容面板（value 属性）' },
-    ],
     code: {
       svelte: `<script>\n  import { Tabs, TabsList, TabsTrigger, TabsContent } from '@alaikis/alaidesign';\n  let active = 'overview';\n</script>\n<Tabs bind:active>\n  <TabsList>\n    <TabsTrigger value="overview">概览</TabsTrigger>\n    <TabsTrigger value="history">历史</TabsTrigger>\n  </TabsList>\n  <TabsContent value="overview">…</TabsContent>\n</Tabs>`,
-      web: `<alu-tabs value="overview">
-  <alu-tabs-list>
-    <alu-tabs-trigger value="overview">概览</alu-tabs-trigger>
-    <alu-tabs-trigger value="history">历史</alu-tabs-trigger>
-  </alu-tabs-list>
-  <alu-tabs-content value="overview">…</alu-tabs-content>
-</alu-tabs>`,
-      vue: `<AluTabs v-model="active"><AluTabsList>…</AluTabsList></AluTabs>`,
-      react: `<AluTabs value={active} onTabChange={(v) => setActive(v)}>…</AluTabs>`,
+      web: `<!-- 复杂数据用 property 赋值 -->
+<alu-tabs id="my-tabs" value="overview"></alu-tabs>
+<script>
+  const el = document.querySelector('#my-tabs');
+  el.tabs = [
+    { value: 'overview', label: '概览', html: '概览内容' },
+    { value: 'history', label: '历史', html: '历史内容' },
+  ];
+  el.addEventListener('tab-change', (e) => console.log(e.detail.value));
+</script>`,
+      vue: `<AluTabs v-model="active" :tabs="tabs" />`,
+      react: `<AluTabs value={active} tabs={tabs} onTabChange={(e) => setActive(e.detail.value)} />`,
     },
   },
   {
@@ -264,7 +260,7 @@ aluSwitch.addEventListener('change', (e) => e.detail.checked);`,
   {
     key: 'pagination',
     title: 'Pagination 分页',
-    description: '数据分页导航。支持页码窗口（sibling-count）、上下翻页、省略号。由 Pagination + Link/Previous/Next 组成。',
+    description: '数据分页导航。支持页码窗口（sibling-count）、上下翻页、省略号。自包含单元素（内部渲染页码/上一页/下一页/省略号）。',
     props: [
       { name: 'count', type: 'number', desc: '总记录数' },
       { name: 'per-page', type: 'number', default: '10', desc: '每页条数' },
@@ -273,13 +269,6 @@ aluSwitch.addEventListener('change', (e) => e.detail.checked);`,
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
     events: [{ name: 'page-change', payload: '{ page: number }', desc: '翻页时触发' }],
-    children: [
-      { tag: 'alu-pagination-link', desc: '页码按钮（page / is-active）' },
-      { tag: 'alu-pagination-previous', desc: '上一页' },
-      { tag: 'alu-pagination-next', desc: '下一页' },
-      { tag: 'alu-pagination-content', desc: '页码容器' },
-      { tag: 'alu-pagination-ellipsis', desc: '省略号' },
-    ],
     code: {
       svelte: `<script>\n  import { Pagination } from '@alaikis/alaidesign';\n  let page = 1;\n</script>\n<Pagination :total="100" :page-size="10" bind:page />`,
       web: `<alu-pagination count="100" per-page="10" page="1" sibling-count="1"></alu-pagination>
@@ -291,35 +280,29 @@ aluPagination.addEventListener('page-change', (e) => e.detail.page);`,
   {
     key: 'dropdown-menu',
     title: 'DropdownMenu 下拉菜单',
-    description: '触发按钮下方展开的操作菜单。支持分组、复选/单选、子菜单、快捷键、危险项。点击外部或 Escape 关闭。',
-    props: [{ name: 'class', type: 'string', desc: '追加类名' }],
-    events: [{ name: 'open', desc: '打开菜单' }, { name: 'close', desc: '关闭菜单' }],
-    children: [
-      { tag: 'alu-dropdown-menu-trigger', desc: '触发按钮' },
-      { tag: 'alu-dropdown-menu-content', desc: '菜单容器（role=menu）' },
-      { tag: 'alu-dropdown-menu-item', desc: '菜单项（variant=inset/destructive）' },
-      { tag: 'alu-dropdown-menu-checkbox-item', desc: '复选项' },
-      { tag: 'alu-dropdown-menu-radio-item', desc: '单选项' },
-      { tag: 'alu-dropdown-menu-label', desc: '分组标题' },
-      { tag: 'alu-dropdown-menu-separator', desc: '分隔线' },
-      { tag: 'alu-dropdown-menu-shortcut', desc: '快捷键标记' },
-      { tag: 'alu-dropdown-menu-sub', desc: '子菜单容器' },
-      { tag: 'alu-dropdown-menu-sub-trigger', desc: '子菜单触发' },
-      { tag: 'alu-dropdown-menu-sub-content', desc: '子菜单内容' },
-      { tag: 'alu-dropdown-menu-group', desc: '分组容器' },
-      { tag: 'alu-dropdown-menu-group-heading', desc: '分组标题' },
+    description: '触发按钮下方展开的操作菜单。Web Components 为单元素 API：trigger 属性为按钮文案，items 属性为菜单项数组（支持 separator / destructive）。',
+    props: [
+      { name: 'trigger', type: 'string', default: "'Menu'", desc: '触发按钮文案' },
+      { name: 'items', type: 'Array<{ label: string; value: string; separator?: boolean; destructive?: boolean }>', desc: '菜单项（通过 property 赋值）' },
+      { name: 'open', type: 'boolean', default: 'false', desc: '打开态（双向）' },
+      { name: 'align', type: "'start' | 'center' | 'end'", default: "'start'", desc: '对齐' },
+      { name: 'class', type: 'string', desc: '追加类名' },
     ],
+    events: [{ name: 'open', desc: '打开菜单' }, { name: 'close', desc: '关闭菜单' }, { name: 'select', payload: '{ value: string }', desc: '选择菜单项' }],
     code: {
       svelte: `<DropdownMenu>\n  <DropdownMenuTrigger><Button variant="outline">操作</Button></DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>查看</DropdownMenuItem>\n    <DropdownMenuItem variant="destructive">删除</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>`,
-      web: `<alu-dropdown-menu>
-  <alu-dropdown-menu-trigger><alu-button variant="outline">操作</alu-button></alu-dropdown-menu-trigger>
-  <alu-dropdown-menu-content>
-    <alu-dropdown-menu-item>查看</alu-dropdown-menu-item>
-    <alu-dropdown-menu-item variant="destructive">删除</alu-dropdown-menu-item>
-  </alu-dropdown-menu-content>
-</alu-dropdown-menu>`,
-      vue: `<AluDropdownMenu>…</AluDropdownMenu>`,
-      react: `<AluDropdownMenu>…</AluDropdownMenu>`,
+      web: `<alu-dropdown-menu id="menu" trigger="操作"></alu-dropdown-menu>
+<script>
+  const el = document.querySelector('#menu');
+  el.items = [
+    { label: '查看轨迹', value: 'view' },
+    { separator: true },
+    { label: '删除', value: 'delete', destructive: true },
+  ];
+  el.addEventListener('select', (e) => console.log(e.detail.value));
+</script>`,
+      vue: `<AluDropdownMenu trigger="操作" :items="items" @select="onSelect" />`,
+      react: `<AluDropdownMenu trigger="操作" items={items} onSelect={(e) => onSelect(e.detail.value)} />`,
     },
   },
 
@@ -327,93 +310,66 @@ aluPagination.addEventListener('page-change', (e) => e.detail.page);`,
   {
     key: 'dialog',
     title: 'Dialog 对话框',
-    description: '模态对话框，阻断底层交互。打开时锁定 body 滚动，支持遮罩点击 / Escape 关闭。由 Dialog + Trigger/Content 组成，内容区含 Header/Title/Description/Footer。',
+    description: '模态对话框，阻断底层交互。打开时锁定 body 滚动，支持遮罩点击 / Escape 关闭。Web Components 为单元素 API：trigger/title/description 属性 + 默认 slot 作为正文。',
     props: [
+      { name: 'trigger', type: 'string', default: "'Open'", desc: '触发按钮文案' },
+      { name: 'title', type: 'string', desc: '标题' },
+      { name: 'description', type: 'string', desc: '描述' },
       { name: 'open', type: 'boolean', default: 'false', desc: '打开态（双向）' },
+      { name: 'close-label', type: 'string', default: "'Close'", desc: '底部关闭按钮文案' },
       { name: 'class', type: 'string', desc: '追加类名（透传 content）' },
     ],
     events: [{ name: 'open', payload: '{ open: boolean }', desc: '打开' }, { name: 'close', payload: '{ open: boolean }', desc: '关闭' }],
-    children: [
-      { tag: 'alu-dialog-trigger', desc: '触发按钮' },
-      { tag: 'alu-dialog-content', desc: '对话框内容（portal 到 body）' },
-      { tag: 'alu-dialog-header', desc: '头部容器' },
-      { tag: 'alu-dialog-title', desc: '标题（h2）' },
-      { tag: 'alu-dialog-description', desc: '描述（p）' },
-      { tag: 'alu-dialog-footer', desc: '底部操作区' },
-      { tag: 'alu-dialog-close', desc: '关闭按钮（x 图标）' },
-      { tag: 'alu-dialog-overlay', desc: '遮罩层' },
-      { tag: 'alu-dialog-portal', desc: 'portal 容器' },
-    ],
     code: {
       svelte: `<Dialog>\n  <DialogTrigger><Button variant="secondary">打开</Button></DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>运单详情</DialogTitle></DialogHeader>\n    <DialogFooter><Button>确认</Button></DialogFooter>\n  </DialogContent>\n</Dialog>`,
-      web: `<alu-dialog>
-  <alu-dialog-trigger><alu-button variant="secondary">打开</alu-button></alu-dialog-trigger>
-  <alu-dialog-content>
-    <alu-dialog-header><alu-dialog-title>运单详情</alu-dialog-title></alu-dialog-header>
-    <alu-dialog-footer><alu-button>确认</alu-button></alu-dialog-footer>
-  </alu-dialog-content>
+      web: `<alu-dialog trigger="打开对话框" title="运单详情" description="查看包裹的完整轨迹。">
+  <p>对话框正文（默认 slot）</p>
 </alu-dialog>`,
-      vue: `<AluDialog><template #trigger><AluButton>打开</AluButton></template><template #content>…</template></AluDialog>`,
-      react: `<AluDialog><AluDialogTrigger><AluButton>打开</AluButton></AluDialogTrigger><AluDialogContent>…</AluDialogContent></AluDialog>`,
+      vue: `<AluDialog trigger="打开" title="运单详情" description="详情说明">正文内容</AluDialog>`,
+      react: `<AluDialog trigger="打开" title="运单详情" description="详情说明">正文内容</AluDialog>`,
     },
   },
   {
     key: 'sheet',
     title: 'Sheet 抽屉',
-    description: '从屏幕边缘滑出的侧边面板，适合二级操作。支持 top/bottom/left/right 四个方向，行为同 Dialog（遮罩 + Escape + 滚动锁）。',
+    description: '从屏幕边缘滑出的侧边面板，适合二级操作。支持 top/bottom/left/right 方向。Web Components 为单元素 API：trigger/title/description/side 属性 + 默认 slot 作为正文。',
     props: [
+      { name: 'trigger', type: 'string', default: "'Open'", desc: '触发按钮文案' },
+      { name: 'title', type: 'string', desc: '标题' },
+      { name: 'description', type: 'string', desc: '描述' },
       { name: 'open', type: 'boolean', default: 'false', desc: '打开态（双向）' },
       { name: 'side', type: "'top' | 'bottom' | 'left' | 'right'", default: "'right'", desc: '滑出方向' },
+      { name: 'close-label', type: 'string', default: "'Close'", desc: '底部关闭按钮文案' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
     events: [{ name: 'open', payload: '{ open: boolean }', desc: '打开' }, { name: 'close', payload: '{ open: boolean }', desc: '关闭' }],
-    children: [
-      { tag: 'alu-sheet-trigger', desc: '触发按钮' },
-      { tag: 'alu-sheet-content', desc: '抽屉内容（side 属性）' },
-      { tag: 'alu-sheet-header', desc: '头部容器' },
-      { tag: 'alu-sheet-title', desc: '标题（h2）' },
-      { tag: 'alu-sheet-description', desc: '描述（p）' },
-      { tag: 'alu-sheet-footer', desc: '底部操作区' },
-      { tag: 'alu-sheet-close', desc: '关闭按钮' },
-      { tag: 'alu-sheet-overlay', desc: '遮罩层' },
-      { tag: 'alu-sheet-portal', desc: 'portal 容器' },
-    ],
     code: {
       svelte: `<Sheet>\n  <SheetTrigger><Button variant="outline">打开</Button></SheetTrigger>\n  <SheetContent side="right">\n    <SheetHeader><SheetTitle>详情</SheetTitle></SheetHeader>\n  </SheetContent>\n</Sheet>`,
-      web: `<alu-sheet>
-  <alu-sheet-trigger><alu-button variant="outline">打开</alu-button></alu-sheet-trigger>
-  <alu-sheet-content side="right">
-    <alu-sheet-header><alu-sheet-title>详情</alu-sheet-title></alu-sheet-header>
-  </alu-sheet-content>
+      web: `<alu-sheet trigger="打开抽屉" title="运单详情" description="SH-20261124-001" side="right">
+  <p>抽屉正文（默认 slot）</p>
 </alu-sheet>`,
-      vue: `<AluSheet>…</AluSheet>`,
-      react: `<AluSheet>…</AluSheet>`,
+      vue: `<AluSheet trigger="打开" title="运单详情" side="right">正文内容</AluSheet>`,
+      react: `<AluSheet trigger="打开" title="运单详情" side="right">正文内容</AluSheet>`,
     },
   },
   {
     key: 'tooltip',
     title: 'Tooltip 提示',
-    description: '悬停 / 聚焦时显示简短说明浮层。支持 top/bottom/left/right 方位与偏移，100ms 延迟隐藏。',
+    description: '悬停 / 聚焦时显示简短说明浮层。Web Components 为单元素 API：content 属性为提示文本，默认 slot 为触发元素。',
     props: [
       { name: 'content', type: 'string', desc: '提示文本（Web Components 模式）' },
       { name: 'side', type: "'top' | 'bottom' | 'left' | 'right'", default: "'top'", desc: '方位' },
       { name: 'side-offset', type: 'number', default: '0', desc: '与触发的偏移像素' },
       { name: 'class', type: 'string', desc: '追加类名（透传气泡）' },
-      { name: 'children', type: 'Snippet', desc: '触发内容（Svelte 模式）' },
+      { name: 'children', type: 'slot', desc: '触发内容（默认 slot）' },
     ],
     events: [{ name: 'show', desc: '显示' }, { name: 'hide', desc: '隐藏' }],
-    children: [
-      { tag: 'alu-tooltip-trigger', desc: '触发元素' },
-      { tag: 'alu-tooltip-content', desc: '提示气泡' },
-      { tag: 'alu-tooltip-portal', desc: 'portal 容器' },
-      { tag: 'alu-tooltip-provider', desc: 'Tooltip 上下文提供器' },
-    ],
     code: {
       svelte: `<Tooltip>\n  <TooltipTrigger><Button variant="outline">悬停我</Button></TooltipTrigger>\n  <TooltipContent>提示文字</TooltipContent>\n</Tooltip>`,
       web: `<alu-tooltip content="提示文字" side="top">
   <alu-button variant="outline">悬停我</alu-button>
 </alu-tooltip>`,
-      vue: `<AluTooltip content="提示文字"><template #trigger><AluButton>悬停我</AluButton></template></AluTooltip>`,
+      vue: `<AluTooltip content="提示文字"><AluButton>悬停我</AluButton></AluTooltip>`,
       react: `<AluTooltip content="提示文字"><AluButton>悬停我</AluButton></AluTooltip>`,
     },
   },
@@ -481,7 +437,7 @@ aluErrorState.addEventListener('retry', load);`,
       { name: 'error', type: 'string', desc: '错误信息（存在时渲染错误 UI，否则渲染 slot）' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
-    events: [{ name: 'reset', desc: '点击重试按钮' }],
+    events: [{ name: 'error', payload: '{ error: Error }', desc: '捕获到错误时触发' }],
     code: {
       svelte: `<svelte:boundary fallback={<ErrorState />}><Children /></svelte:boundary>`,
       web: `<alu-error-boundary>正常内容</alu-error-boundary>
@@ -521,11 +477,11 @@ aluBoundary.setAttribute('error', '渲染失败');`,
   {
     key: 'data-table',
     title: 'DataTable 数据表格',
-    description: '增强表格：列配置、排序、分页、行点击、加载骨架、空态。columns/data 以 JSON 字符串传入（Web Components 限制），Svelte 包用对象 prop。',
+    description: '增强表格：列配置、排序、分页、行点击、加载骨架、空态。columns/data/pagination 通过 property 赋值（数组/对象），row-key/empty-text/empty-icon 为属性。',
     props: [
-      { name: 'columns', type: 'DataTableColumn[]', desc: '列定义：key/title/sortable/align/width/fixed/render' },
-      { name: 'data', type: 'Record<string, unknown>[]', desc: '行数据' },
-      { name: 'pagination', type: 'DataTablePagination', desc: '分页：total/page/pageSize/pageSizeOptions/showSizeChanger/showQuickJumper' },
+      { name: 'columns', type: 'DataTableColumn[]', desc: '列定义：key/title/sortable/align/width/fixed/render（property）' },
+      { name: 'data', type: 'Record<string, unknown>[]', desc: '行数据（property）' },
+      { name: 'pagination', type: 'DataTablePagination', desc: '分页：total/page/pageSize/…（property）' },
       { name: 'row-key', type: 'string', default: "'id'", desc: '行唯一键' },
       { name: 'loading', type: 'boolean', default: 'false', desc: '加载态（渲染骨架行）' },
       { name: 'empty-text', type: 'string', default: "'No data'", desc: '空态文本' },
@@ -535,15 +491,19 @@ aluBoundary.setAttribute('error', '渲染失败');`,
     events: [
       { name: 'row-click', payload: '{ row }', desc: '行点击' },
       { name: 'page-change', payload: '{ page, pageSize }', desc: '翻页' },
-      { name: 'sort', payload: '{ key, direction }', desc: '列排序' },
+      { name: 'sort', payload: '{ column, direction }', desc: '列排序' },
     ],
     code: {
       svelte: `<script>\n  import { DataTable } from '@alaikis/alaidesign';\n  const columns = [{ key: 'id', title: '订单号', sortable: true }];\n  const data = [{ id: 'SH-001' }];\n</script>\n<DataTable {columns} {data} onrow-click={onRowClick} />`,
-      web: `<alu-data-table
-  columns='\${JSON.stringify(columns)}'
-  data='\${JSON.stringify(data)}'
-  pagination='\${JSON.stringify({ total: data.length, pageSize: 10 })}'
-></alu-data-table>`,
+      web: `<!-- columns/data/pagination 通过 property 赋值 -->
+<alu-data-table id="dt" empty-text="暂无数据"></alu-data-table>
+<script>
+  const el = document.querySelector('#dt');
+  el.columns = [{ key: 'id', title: '订单号', sortable: true }];
+  el.data = [{ id: 'SH-001' }, { id: 'SH-002' }];
+  el.pagination = { total: 2, pageSize: 10 };
+  el.addEventListener('row-click', (e) => console.log(e.detail.row));
+</script>`,
       vue: `<AluDataTable :columns="columns" :data="data" @row-click="onRowClick" @sort="onSort" />`,
       react: `<AluDataTable columns={columns} data={data} onRowClick={onRowClick} onSort={onSort} />`,
     },
@@ -631,7 +591,7 @@ aluSearchBar.addEventListener('search', (e) => e.detail.value);`,
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
       { name: 'class', type: 'string', desc: '追加类名' },
     ],
-    events: [{ name: 'value-change', payload: '{ value: string }', desc: '日期变化' }],
+    events: [{ name: 'value-change', payload: '{ value: DateValue }', desc: '日期变化' }],
     code: {
       svelte: `<script>\n  import { DatePicker } from '@alaikis/alaidesign';\n  let date = '2026-11-24';\n</script>\n<DatePicker bind:value placeholder="YYYY-MM-DD" />`,
       web: `<alu-date-picker placeholder="YYYY-MM-DD" value="2026-11-24"></alu-date-picker>
@@ -652,7 +612,7 @@ aluDatePicker.addEventListener('value-change', (e) => e.detail.value);`,
       { name: 'background-color', type: 'string', default: "'#ffffff'", desc: '背景色' },
       { name: 'placeholder', type: 'string', default: "'Sign here'", desc: '占位文本' },
     ],
-    events: [{ name: 'change', desc: '首次落笔时触发' }],
+    events: [{ name: 'change', payload: '{ dataUrl: string }', desc: '完成一次签名时触发' }],
     code: {
       svelte: `<script>\n  import SignaturePad from '@alaikis/alaidesign/SignaturePad.svelte';\n</script>\n<SignaturePad width={300} height={150} on:change={onSign} />`,
       web: `<alu-signature-pad width="300" height="150" placeholder="在此签名"></alu-signature-pad>
