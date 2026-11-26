@@ -24,7 +24,7 @@ jobs:
       - name: Checkout AlaiDesign source
         uses: actions/checkout@v4
         with:
-          repository: alaikis/alai-desgin
+          repository: alaikis/alaidesign-ui
           ref: ai/Administrator/alaidesign-website-multi-framework
           path: source/AlaiDesign
 
@@ -33,14 +33,15 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm install
-
+      # 先构建核心：确保 file: 依赖在安装站点依赖时已包含 dist 产物
       - name: Build @alaikis/alaidesign-ui
         run: |
           cd source/AlaiDesign
           npm install --legacy-peer-deps
           npm run build --workspace=@alaikis/alaidesign-ui
+
+      - name: Install site dependencies
+        run: npm install --legacy-peer-deps
 
       - name: Build official site
         run: npm run build
