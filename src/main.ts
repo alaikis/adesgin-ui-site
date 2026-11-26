@@ -254,7 +254,7 @@ const categories = [
   {
     name: '基础',
     desc: '按钮、徽章、卡片等原子组件',
-    items: ['button', 'badge', 'card', 'input', 'checkbox', 'select', 'switch', 'textarea', 'separator', 'avatar'],
+    items: ['button', 'badge', 'card', 'input', 'checkbox', 'radio-group', 'select', 'switch', 'textarea', 'separator', 'avatar'],
   },
   {
     name: '导航',

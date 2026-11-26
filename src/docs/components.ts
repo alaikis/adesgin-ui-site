@@ -665,4 +665,90 @@ signaturePad.clear();`,
       react: `<AluFormField label="运单号" required><AluInput /></AluFormField>`,
     },
   },
+  {
+    key: 'radio-group',
+    title: 'RadioGroup 单选组',
+    description: '单选按钮组。Web Components 用 options 属性传入 [{ value, label, disabled? }]。',
+    props: [
+      { name: 'options', type: 'Array<{ value: string; label: string; disabled?: boolean }>', desc: '选项（property 赋值）' },
+      { name: 'value', type: 'string', desc: '当前选中值（双向）' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
+      { name: 'class', type: 'string', desc: '追加类名' },
+    ],
+    events: [{ name: 'change', payload: '{ value: string }', desc: '选中值变化' }],
+    code: {
+      svelte: `<script>\n  import { RadioGroup, RadioGroupItem } from '@alaikis/alaidesign';\n  let v = 'a';\n</script>\n<RadioGroup bind:value={v}>\n  <RadioGroupItem value="a">A</RadioGroupItem>\n</RadioGroup>`,
+      web: `<alu-radio-group id="rg" value="a"></alu-radio-group>
+<script>
+  const el = document.querySelector('#rg');
+  el.options = [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }];
+</script>`,
+      vue: `<AluRadioGroup v-model="v" :options="options" />`,
+      react: `<AluRadioGroup value={v} options={options} onChange={(e) => setV(e.detail.value)} />`,
+    },
+  },
+  {
+    key: 'skeleton-card',
+    title: 'SkeletonCard 卡片骨架',
+    description: '卡片形态的加载占位骨架。',
+    props: [{ name: 'class', type: 'string', desc: '追加类名' }],
+    code: {
+      svelte: `<SkeletonCard />`,
+      web: `<alu-skeleton-card></alu-skeleton-card>`,
+      vue: `<AluSkeletonCard />`,
+      react: `<AluSkeletonCard />`,
+    },
+  },
+  {
+    key: 'skeleton-table',
+    title: 'SkeletonTable 表格骨架',
+    description: '表格形态加载骨架，rows/cols 控制行数与列数。',
+    props: [
+      { name: 'rows', type: 'number', default: '5', desc: '行数' },
+      { name: 'cols', type: 'number', default: '4', desc: '列数' },
+      { name: 'class', type: 'string', desc: '追加类名' },
+    ],
+    code: {
+      svelte: `<SkeletonTable rows={3} cols={5} />`,
+      web: `<alu-skeleton-table rows="3" cols="5"></alu-skeleton-table>`,
+      vue: `<AluSkeletonTable :rows="3" :cols="5" />`,
+      react: `<AluSkeletonTable rows={3} cols={5} />`,
+    },
+  },
+  {
+    key: 'skeleton-page',
+    title: 'SkeletonPage 页面骨架',
+    description: '整页加载骨架：标题 + 段落行占位。',
+    props: [{ name: 'class', type: 'string', desc: '追加类名' }],
+    code: {
+      svelte: `<SkeletonPage />`,
+      web: `<alu-skeleton-page></alu-skeleton-page>`,
+      vue: `<AluSkeletonPage />`,
+      react: `<AluSkeletonPage />`,
+    },
+  },
+  {
+    key: 'table-actions',
+    title: 'TableActions 表格操作区',
+    description: '表格行内操作按钮容器，支持 align 对齐。',
+    props: [{ name: 'align', type: "'start' | 'center' | 'end'", default: "'end'", desc: '对齐' }],
+    code: {
+      svelte: `<TableActions align="end"><Button size="icon" variant="ghost">…</Button></TableActions>`,
+      web: `<alu-table-actions align="end"><alu-button variant="ghost">编辑</alu-button></alu-table-actions>`,
+      vue: `<AluTableActions align="end">…</AluTableActions>`,
+      react: `<AluTableActions align="end">…</AluTableActions>`,
+    },
+  },
+  {
+    key: 'table-caption',
+    title: 'TableCaption 表格标题',
+    description: '表格说明/标题（置于 table 内）。',
+    props: [{ name: 'class', type: 'string', desc: '追加类名' }],
+    code: {
+      svelte: `<Table><TableCaption>共 4 条记录</TableCaption></Table>`,
+      web: `<alu-table><alu-table-caption>共 4 条记录</alu-table-caption></alu-table>`,
+      vue: `<AluTable><AluTableCaption>共 4 条记录</AluTableCaption></AluTable>`,
+      react: `<AluTable><AluTableCaption>共 4 条记录</AluTableCaption></AluTable>`,
+    },
+  },
 ];
